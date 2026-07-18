@@ -1,0 +1,35 @@
+package by.dytni.innoviseproject.repository;
+
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import by.dytni.innoviseproject.repository.entity.UserEntity;
+
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
+    Page<UserEntity> findAll(Specification<UserEntity> spec, Pageable pageable);
+
+    @Modifying
+    @Query("""
+            UPDATE UserEntity u
+            SET u.activeStatus = :status
+            WHERE u.id = :id
+            """)
+    void changeUserStatus(@Param("id") Long id, @Param("status") Boolean status);
+
+    @Query(value = """
+        SELECT
+            u.user_id,
+            u.user_first_name,
+            u.user_last_name,
+            u.user_active_status
+        FROM user_entity u
+        WHERE u.user_id = :id;""", nativeQuery = true)
+    Optional<UserEntity> findByUserId(@Param("id") Long id);
+}
