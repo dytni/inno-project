@@ -1,0 +1,11 @@
+package by.dytni.innoviseproject.dto.user;
+
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class UserUpdater {
+    private String firstName;
+    private String lastName;
+}
