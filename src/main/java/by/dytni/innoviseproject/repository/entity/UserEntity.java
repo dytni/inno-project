@@ -1,5 +1,6 @@
 package by.dytni.innoviseproject.repository.entity;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,9 +38,14 @@ public class UserEntity {
     @Column(nullable = false, name = "user_first_name")
     private String firstName;
 
-
     @Column(nullable = false, name = "user_last_name")
     private String lastName;
+
+    @Column(nullable = false, name = "user_birth_date")
+    private LocalDate birthDate;
+
+    @Column(nullable = false, name = "user_email")
+    private String email;
 
     @Column(nullable = false, name = "user_active_status")
     @Builder.Default
