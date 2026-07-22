@@ -28,8 +28,18 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
             u.user_id,
             u.user_first_name,
             u.user_last_name,
+            u.user_birth_date,
+            u.user_email,
             u.user_active_status
         FROM user_entity u
-        WHERE u.user_id = :id;""", nativeQuery = true)
+        WHERE u.user_id = :id""", nativeQuery = true)
     Optional<UserEntity> findByUserId(@Param("id") Long id);
+
+    @Query("""
+        SELECT u
+        FROM UserEntity u
+        LEFT JOIN FETCH u.cards
+        WHERE u.id = :id""")
+    Optional<UserEntity> findByIdWithCards(@Param("id") Long id);
+
 }

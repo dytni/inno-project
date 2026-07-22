@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Component;
 
 import by.dytni.innoviseproject.repository.criteria.UserCriteria;
 import by.dytni.innoviseproject.repository.entity.UserEntity;
@@ -11,8 +12,9 @@ import by.dytni.innoviseproject.repository.entity.UserEntity;
 import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.criteria.Predicate;
 
+@Component
 public class UserSpecification {
-    public static Specification<UserEntity> getSpecification(UserCriteria criteria) {
+    public Specification<UserEntity> getSpecification(UserCriteria criteria) {
 
         return (root, query, builder) -> {
             List<Predicate> predicates = new ArrayList<>();
