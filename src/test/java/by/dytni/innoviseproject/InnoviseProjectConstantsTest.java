@@ -1,7 +1,6 @@
 package by.dytni.innoviseproject;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 import lombok.experimental.UtilityClass;
 
