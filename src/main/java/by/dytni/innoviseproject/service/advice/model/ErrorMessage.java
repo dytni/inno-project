@@ -3,7 +3,6 @@ package by.dytni.innoviseproject.service.advice.model;
 
 
 import java.time.LocalDate;
-import java.util.Date;
 
 import lombok.Builder;
 import lombok.Data;

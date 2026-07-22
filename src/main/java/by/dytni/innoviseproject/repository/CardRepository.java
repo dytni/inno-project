@@ -1,7 +1,6 @@
 package by.dytni.innoviseproject.repository;
 
 import java.util.Collection;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
