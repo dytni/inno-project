@@ -20,10 +20,10 @@ public class UserSpecification {
             List<Predicate> predicates = new ArrayList<>();
 
             if (StringUtils.isNotBlank(criteria.getFirstName()))
-                predicates.add(builder.equal(root.get("firstName"), criteria.getFirstName()));
+                predicates.add(builder.equal(root.get(UserEntity.Fields.firstName), criteria.getFirstName()));
 
             if (StringUtils.isNotBlank(criteria.getLastName()))
-                predicates.add(builder.equal(root.get("lastName"), criteria.getLastName()));
+                predicates.add(builder.equal(root.get(UserEntity.Fields.lastName), criteria.getLastName()));
 
             return builder.and(predicates.toArray(Predicate[]::new));
         };

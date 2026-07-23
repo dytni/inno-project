@@ -1,6 +1,5 @@
 package by.dytni.innoviseproject.repository;
 
-import java.util.Collection;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,13 +28,4 @@ public interface CardRepository extends JpaRepository<CardEntity, Long> {
             """)
     void changeCardStatus(@Param("id") Long id, @Param("status") Boolean status);
 
-
-    @Query(value = """
-        SELECT
-            c.card_id,
-            c.card_active_status,
-            c.user_id
-        FROM card_entity c
-        WHERE c.user_id = :userId""", nativeQuery = true)
-    Collection<CardEntity> findByUserId(@Param("userId") Long userId);
 }

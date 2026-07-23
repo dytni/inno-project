@@ -1,5 +1,7 @@
 package by.dytni.innoviseproject.controller;
 
+import static by.dytni.innoviseproject.InnoviseProjectConstants.DEFAULT_PAGE;
+import static by.dytni.innoviseproject.InnoviseProjectConstants.DEFAULT_PAGE_SIZE;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -49,8 +51,8 @@ public class UserController implements UserControllerApi {
     public ResponseEntity<Page<User>> getAllUsers(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String lastName,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = DEFAULT_PAGE) int page,
+            @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size) {
         return ResponseEntity.status(OK).body(userService.getAllUsers(UserFilter.builder()
                                                                               .firstName(name)
                                                                               .lastName(lastName)

@@ -1,5 +1,7 @@
 package by.dytni.innoviseproject.controller;
 
+import static by.dytni.innoviseproject.InnoviseProjectConstants.DEFAULT_PAGE;
+import static by.dytni.innoviseproject.InnoviseProjectConstants.DEFAULT_PAGE_SIZE;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -52,8 +54,8 @@ public class CardController implements CardControllerApi {
     public ResponseEntity<Page<Card>> getAllCards(
                                                   @RequestParam(required = false) String name,
                                                   @RequestParam(required = false) String lastName,
-                                                  @RequestParam(defaultValue = "0") int page,
-                                                  @RequestParam(defaultValue = "10") int size){
+                                                  @RequestParam(defaultValue = DEFAULT_PAGE) int page,
+                                                  @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size){
         return ResponseEntity.status(OK).body(cardService.getAllCards(CardFilter.builder()
                                                       .userFirstName(name)
                                                       .userLastName(lastName)
@@ -76,8 +78,8 @@ public class CardController implements CardControllerApi {
     @GetMapping("/{userId}/user")
     public ResponseEntity<Page<Card>> getAllByUserId(
             @PathVariable Long userId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = DEFAULT_PAGE) int page,
+            @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.status(OK).body(cardService.getAllCardsByUserId(pageable, userId));
     }

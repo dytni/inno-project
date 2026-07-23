@@ -32,7 +32,11 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
             u.user_last_name,
             u.user_birth_date,
             u.user_email,
-            u.user_active_status
+            u.user_active_status,
+            u.created_by,
+            u.created_at,
+            u.updated_by,
+            u.updated_at
         FROM user_entity u
         WHERE u.user_id = :id""", nativeQuery = true)
     Optional<UserEntity> findByUserId(@Param("id") Long id);

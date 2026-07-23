@@ -19,6 +19,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldNameConstants;
 import lombok.experimental.SuperBuilder;
 
 @SuperBuilder
@@ -27,8 +28,9 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @Entity
+@FieldNameConstants
 @Table(name = "user_entity")
-public class UserEntity {
+public class UserEntity extends AuditableEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -19,12 +19,12 @@ public class CardSpecifications {
 
         return (root, query, builder) -> {
             List<Predicate> predicates = new ArrayList<>();
-            Join<CardEntity, UserEntity> userJoin = root.join("user");
+            Join<CardEntity, UserEntity> userJoin = root.join(CardEntity.Fields.user);
             if (StringUtils.isNotBlank(criteria.getUserFirstName()))
-                predicates.add(builder.equal(userJoin.get("firstName"), criteria.getUserFirstName()));
+                predicates.add(builder.equal(userJoin.get(UserEntity.Fields.firstName), criteria.getUserFirstName()));
 
             if (StringUtils.isNotBlank(criteria.getUserLastName()))
-                predicates.add(builder.equal(userJoin.get("lastName"), criteria.getUserLastName()));
+                predicates.add(builder.equal(userJoin.get(UserEntity.Fields.lastName), criteria.getUserLastName()));
 
             return builder.and(predicates.toArray(Predicate[]::new));
         };
