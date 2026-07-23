@@ -13,7 +13,7 @@ import org.springframework.web.context.request.WebRequest;
 import by.dytni.innoviseproject.exceptions.CardNotFoundException;
 import by.dytni.innoviseproject.exceptions.CardsLimitException;
 import by.dytni.innoviseproject.exceptions.UserNotFoundException;
-import by.dytni.innoviseproject.service.advice.model.ErrorMessage;
+import by.dytni.innoviseproject.dto.ErrorMessage;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {

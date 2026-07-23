@@ -1,4 +1,4 @@
-package by.dytni.innoviseproject.service.advice.model;
+package by.dytni.innoviseproject.dto;
 
 
 

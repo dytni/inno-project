@@ -29,9 +29,11 @@ import by.dytni.innoviseproject.repository.entity.UserEntity;
 import by.dytni.innoviseproject.repository.specification.CardSpecifications;
 import by.dytni.innoviseproject.service.CardService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class CardServiceImpl implements CardService {
 
     private final CardRepository cardRepository;
@@ -45,6 +47,7 @@ public class CardServiceImpl implements CardService {
     @CachePut(value = "cards", key = "#result.id")
     @CacheEvict(value = "cardsByUserId", key = "#result.userId")
     public Card createCard(CardMaker cardMaker) {
+        log.info("Create card: {}", cardMaker);
         Long userId = cardMaker.getUserId();
         UserEntity user = userRepository.findByIdWithCards(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
@@ -65,6 +68,7 @@ public class CardServiceImpl implements CardService {
             @CacheEvict(value = "cardsByUserId", key = "#result.userId")
     })
     public Card updateCard(CardUpdater cardUpdater, Long cardId) {
+        log.info("Update card: {}", cardUpdater);
         CardEntity cardEntity = cardRepository.findById(cardId)
                 .orElseThrow(() -> new CardNotFoundException(cardId));
         cardRepository.save(cardMapper.updateEntity(cardEntity, cardUpdater));
@@ -78,6 +82,7 @@ public class CardServiceImpl implements CardService {
             @CacheEvict(value = "cardsByUserId", key = "#result.userId")
     })
     public Card deleteCard(Long cardId) {
+        log.info("Delete card: {}", cardId);
         CardEntity cardEntity = cardRepository.findById(cardId)
                 .orElseThrow(() -> new CardNotFoundException(cardId));
         cardRepository.delete(cardEntity);
@@ -87,6 +92,7 @@ public class CardServiceImpl implements CardService {
     @Override
     @Transactional(readOnly = true)
     public Page<Card> getAllCards(CardFilter filter) {
+        log.info("Get all cards: {}", filter);
         CardCriteria criteria = cardCriteriaMapper.dtoToCriteria(filter);
         Specification<CardEntity> spec = cardSpecifications.getSpecification(criteria);
         return cardRepository.findAll(spec, criteria.getPageable()).map(cardMapper::entityToDto);
@@ -96,6 +102,7 @@ public class CardServiceImpl implements CardService {
     @Transactional(readOnly = true)
     @Cacheable(value = "cardsByUserId", key = "#userId")
     public Page<Card> getAllCardsByUserId(Pageable pageable, Long userId) {
+        log.info("Get all cards by user: {}", userId);
         return cardRepository.findAllByUserId(userId, pageable).map(cardMapper::entityToDto);
     }
 
@@ -103,6 +110,7 @@ public class CardServiceImpl implements CardService {
     @Transactional(readOnly = true)
     @Cacheable(value = "cards", key = "#cardId")
     public Card getCardById(Long cardId) {
+        log.info("Get card by id: {}", cardId);
         return cardRepository.findById(cardId).map(cardMapper::entityToDto)
                 .orElseThrow(() -> new CardNotFoundException(cardId));
     }
@@ -111,6 +119,7 @@ public class CardServiceImpl implements CardService {
     @Transactional
     @CacheEvict(value = "cardsByUserId", key = "#result.userId")
     public Card changeStatus(Long cardId) {
+        log.info("Change status of card: {}", cardId);
         CardEntity cardEntity = cardRepository.findById(cardId)
                 .orElseThrow(() -> new CardNotFoundException(cardId));
         cardRepository.changeCardStatus(cardId, !cardEntity.getActiveStatus());

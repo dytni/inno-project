@@ -39,7 +39,7 @@ public class CardEntity {
     @Column(nullable = false, name = "card_holder_name")
     private String holderName;
 
-    @Column(nullable = false, name = "card_number")
+    @Column(nullable = false, name = "card_number", unique = true)
     private String cardNumber;
 
     @Column(nullable = false, name = "card_expiry_date")

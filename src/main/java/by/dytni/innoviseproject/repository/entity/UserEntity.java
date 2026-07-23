@@ -44,7 +44,7 @@ public class UserEntity {
     @Column(nullable = false, name = "user_birth_date")
     private LocalDate birthDate;
 
-    @Column(nullable = false, name = "user_email")
+    @Column(nullable = false, name = "user_email", unique = true)
     private String email;
 
     @Column(nullable = false, name = "user_active_status")

@@ -22,9 +22,11 @@ import by.dytni.innoviseproject.repository.entity.UserEntity;
 import by.dytni.innoviseproject.repository.specification.UserSpecification;
 import by.dytni.innoviseproject.service.UserService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -35,6 +37,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @CachePut(value = "users", key = "#result.id")
     public User createUser(UserMaker userMaker) {
+        log.info("Create user: {}", userMaker);
         UserEntity userEntity = userMapper.dtoToEntity(userMaker);
         userRepository.save(userEntity);
         return userMapper.entityToDto(userEntity);
@@ -44,6 +47,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @CacheEvict(value = "users", key = "#userId")
     public User updateUser(UserUpdater userUpdater, Long userId) {
+        log.info("Update user: {}", userUpdater);
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
         userRepository.save(userMapper.updateEntity(userEntity, userUpdater));
@@ -57,6 +61,7 @@ public class UserServiceImpl implements UserService {
             @CacheEvict(value = "cardsByUserId", key = "#userId")
     })
     public User deleteUser(Long userId) {
+        log.info("Delete user: {}", userId);
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
         userRepository.delete(userEntity);
@@ -66,6 +71,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public Page<User> getAllUsers(UserFilter filter) {
+        log.info("Get all users: {}", filter);
         UserCriteria criteria = userCriteriaMapper.dtoToCriteria(filter);
         Specification<UserEntity> spec = userSpecification.getSpecification(criteria);
         return userRepository.findAll(spec, criteria.getPageable())
@@ -76,6 +82,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Cacheable(value = "users", key = "#userId")
     public User getUserById(Long userId) {
+        log.info("Get user: {}", userId);
         return userRepository.findByUserId(userId)
                 .map(userMapper::entityToDto)
                 .orElseThrow(() -> new UserNotFoundException(userId));
@@ -85,6 +92,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @CacheEvict(value = "users", key = "#userId")
     public User changeStatus(Long userId) {
+        log.info("Change user status: {}", userId);
         UserEntity userEntity = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
         userRepository.changeUserStatus(userId, !userEntity.getActiveStatus());
