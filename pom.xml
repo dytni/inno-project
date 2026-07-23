@@ -16,9 +16,8 @@
 
 
   <properties>
-    <sonar.projectKey>
-      innovise-project
-    </sonar.projectKey>
+    <sonar.organization>dytni</sonar.organization>
+    <sonar.projectKey>innovise-project</sonar.projectKey>
     <java.version>21</java.version>
     <lombock.version>1.18.46</lombock.version>
     <mapstruct.version>1.6.3</mapstruct.version>
