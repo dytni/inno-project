@@ -2,16 +2,15 @@ services:
 
   postgres:
     image: postgres:15-alpine
+    env_file:
+      - .env
     ports:
       - "${POSTGRES_PORT}:5432"
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -41,7 +40,7 @@ services:
       context: .
       dockerfile: user-service/Dockerfile
     ports:
-      - "${APP_PORT}:8080"
+      - "${USER_SERVICE_PORT}:8080"
     depends_on:
       postgres:
         condition: service_healthy
@@ -49,11 +48,28 @@ services:
         condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      SPRING_DATASOURCE_URL: ${POSTGRES_URL}
+      SPRING_DATASOURCE_URL: ${POSTGRES_USER_URL}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       SPRING_DATA_REDIS_PORT: 6379
       SPRING_DATA_REDIS_PASSWORD: ${REDIS_PASSWORD}
+
+  auth-service:
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: auth/Dockerfile
+    ports:
+      - "${AUTH_SERVICE_PORT}:8081"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: ${POSTGRES_AUTH_URL}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
 
 
 volumes:
