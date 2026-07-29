@@ -1,6 +1,7 @@
 package by.dytni.userservice;
 
 import java.time.LocalDate;
+import java.time.Month;
 
 import lombok.experimental.UtilityClass;
 
@@ -11,7 +12,7 @@ public class UserServiceTestConstants {
     public static Boolean USER_ACTIVE = true;
     public static Boolean USER_DEACTIVE = false;
     public static String USER_EMAIL = "test@gmail.com";
-    public static LocalDate USER_BIRTH_DATE = LocalDate.of(1990, 1, 1);
+    public static LocalDate USER_BIRTH_DATE = LocalDate.of(1990, Month.DECEMBER, 1);
     public static String USER_FIRST_NAME = "test";
     public static String USER_ANOTHER_FIRST_NAME = "test2";
     public static String USER_LAST_NAME = "test";
@@ -21,7 +22,7 @@ public class UserServiceTestConstants {
     public static String CARD_HOLDER = "test test";
     public static String CARD_NUMBER = "1234567890123456";
     public static String CARD_ANOTHER_NUMBER = "1234567890123457";
-    public static LocalDate CARD_EXPIRY_DATE = LocalDate.of(2031, 1, 1);
+    public static LocalDate CARD_EXPIRY_DATE = LocalDate.of(2031, Month.DECEMBER, 1);
     public static Boolean CARD_ACTIVE = true;
     public static Boolean CARD_DEACTIVE = false;
 }

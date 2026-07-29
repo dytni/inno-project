@@ -13,7 +13,6 @@ public class UserServiceConstants {
     public static final String CARDS_LIMIT_ERROR = "One user can have only 5 cards";
     public static final String BUSINESS_LOGIC_ERROR = "One user can have only 5 cards";
 
-
-    public final static String CARD_NUMBER_PATTERN = "\\d{16}";
+    public static final String CARD_NUMBER_PATTERN = "\\d{16}";
 
 }
