@@ -17,7 +17,7 @@ public interface UserService {
 
      Page<User> getAllUsers(UserFilter filter);
 
-     User getUserById(Long userId) ;
+     User getUserById(Long userId);
 
-     User changeStatus(Long userId) ;
+     User changeStatus(Long userId);
 }
