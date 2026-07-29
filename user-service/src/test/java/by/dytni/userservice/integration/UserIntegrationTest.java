@@ -8,8 +8,12 @@ import static by.dytni.userservice.UserServiceConstantsTest.USER_LAST_NAME;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import java.util.UUID;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.resttestclient.TestRestTemplate;
@@ -20,15 +24,20 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import by.dytni.userservice.config.AuditTestConfig;
 import by.dytni.userservice.config.SecurityTestConfig;
 import by.dytni.userservice.dto.user.User;
 import by.dytni.userservice.dto.user.UserMaker;
@@ -39,7 +48,11 @@ import by.dytni.userservice.dto.user.UserUpdater;
 @AutoConfigureTestRestTemplate
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @ActiveProfiles("test")
-@Import(SecurityTestConfig.class)
+@Import({
+        SecurityTestConfig.class,
+        AuditTestConfig.class
+})
+@Transactional
 public class UserIntegrationTest{
 
     private static final String BASE_URL = "/api/user";
@@ -68,18 +81,12 @@ public class UserIntegrationTest{
     }
 
 
-
     @Autowired
     private TestRestTemplate restTemplate;
 
     @Test
     void create_user() {
-        UserMaker request = UserMaker.builder()
-                .firstName(USER_FIRST_NAME)
-                .lastName(USER_LAST_NAME)
-                .email(USER_EMAIL)
-                .birthDate(USER_BIRTH_DATE)
-                .build();
+        UserMaker request = createUserRequest();
 
         ResponseEntity<User> response =
                 restTemplate.postForEntity(BASE_URL, request, User.class);
@@ -96,16 +103,7 @@ public class UserIntegrationTest{
 
     @Test
     void get_user_by_id() {
-        UserMaker request = UserMaker.builder()
-                .firstName(USER_FIRST_NAME)
-                .lastName(USER_LAST_NAME)
-                .email(USER_EMAIL)
-                .birthDate(USER_BIRTH_DATE)
-                .build();
-
-        User created = restTemplate
-                .postForEntity(BASE_URL, request, User.class)
-                .getBody();
+        User created = createUser();
 
         assertThat(created).isNotNull();
 
@@ -124,19 +122,8 @@ public class UserIntegrationTest{
 
     @Test
     void update_user() {
-        UserMaker request = UserMaker.builder()
-                .firstName(USER_FIRST_NAME)
-                .lastName(USER_LAST_NAME)
-                .email(USER_EMAIL)
-                .birthDate(USER_BIRTH_DATE)
-                .build();
-
-        User created = restTemplate
-                .postForEntity(BASE_URL, request, User.class)
-                .getBody();
-
+        User created = createUser();
         assertThat(created).isNotNull();
-
         UserUpdater updater = UserUpdater.builder()
                 .firstName(USER_ANOTHER_FIRST_NAME)
                 .lastName(USER_LAST_NAME)
@@ -166,15 +153,7 @@ public class UserIntegrationTest{
 
     @Test
     void get_all_users() {
-        UserMaker request = UserMaker.builder()
-                .firstName(USER_FIRST_NAME)
-                .lastName(USER_LAST_NAME)
-                .email(USER_EMAIL)
-                .birthDate(USER_BIRTH_DATE)
-                .build();
-
-        restTemplate.postForEntity(BASE_URL, request, User.class);
-
+        createUser();
         ResponseEntity<String> response =
                 restTemplate.getForEntity(BASE_URL, String.class);
 
@@ -185,18 +164,7 @@ public class UserIntegrationTest{
 
     @Test
     void change_user_status() {
-        UserMaker request = UserMaker.builder()
-                .firstName(USER_FIRST_NAME)
-                .lastName(USER_LAST_NAME)
-                .email(USER_EMAIL)
-                .birthDate(USER_BIRTH_DATE)
-                .build();
-
-        User created = restTemplate
-                .postForEntity(BASE_URL, request, User.class)
-                .getBody();
-
-
+        User created = createUser();
         assertThat(created).isNotNull();
 
         ResponseEntity<User> response = restTemplate.exchange(
@@ -212,6 +180,19 @@ public class UserIntegrationTest{
         assertThat(body.getId()).isEqualTo(created.getId());
     }
 
+    private UserMaker createUserRequest() {
+        return UserMaker.builder()
+                .firstName(USER_FIRST_NAME)
+                .lastName(USER_LAST_NAME)
+                .email(UUID.randomUUID() + "@gmail.com")
+                .birthDate(USER_BIRTH_DATE)
+                .build();
+    }
 
+    private User createUser() {
+        return restTemplate
+                .postForEntity(BASE_URL, createUserRequest(), User.class)
+                .getBody();
+    }
 
 }

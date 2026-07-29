@@ -29,6 +29,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 
 import by.dytni.userservice.dto.user.User;
 import by.dytni.userservice.dto.user.UserFilter;
@@ -93,6 +97,25 @@ public class UserServiceTests {
         verifyNoMoreInteractions(userRepository, userMapper, criteriaMapper, specification, userSpecification);
     }
 
+
+    @Test
+    void create_user() {
+        UserMaker userMaker = UserMaker.builder()
+                .firstName(USER_FIRST_NAME)
+                .lastName(USER_LAST_NAME)
+                .email(USER_EMAIL)
+                .birthDate(USER_BIRTH_DATE)
+                .build();
+        when(userMapper.dtoToEntity(userMaker)).thenReturn(userEntity);
+        when(userRepository.save(userEntity)).thenReturn(userEntity);
+        when(userMapper.entityToDto(userEntity)).thenReturn(user);
+
+        User result = service.createUser(userMaker);
+        assertThat(result).isEqualTo(user);
+
+        verify(userRepository, times(1)).save(userEntity);
+    }
+
     @Test
     public void get_all_users() {
         UserFilter userFilter = UserFilter.builder()
@@ -133,23 +156,6 @@ public class UserServiceTests {
 
     }
 
-    @Test
-    void create_user() {
-        UserMaker userMaker = UserMaker.builder()
-                .firstName(USER_FIRST_NAME)
-                .lastName(USER_LAST_NAME)
-                .email(USER_EMAIL)
-                .birthDate(USER_BIRTH_DATE)
-                .build();
-        when(userMapper.dtoToEntity(userMaker)).thenReturn(userEntity);
-        when(userRepository.save(userEntity)).thenReturn(userEntity);
-        when(userMapper.entityToDto(userEntity)).thenReturn(user);
-
-        User result = service.createUser(userMaker);
-        assertThat(result).isEqualTo(user);
-
-        verify(userRepository, times(1)).save(userEntity);
-    }
 
     @Test
     void update_user() {
@@ -181,18 +187,6 @@ public class UserServiceTests {
     }
 
     @Test
-    void delete_user() {
-
-        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(userEntity));
-        when(userMapper.entityToDto(userEntity)).thenReturn(user);
-
-        service.deleteUser(USER_ID);
-
-        verify(userRepository, times(1)).findById(USER_ID);
-        verify(userRepository, times(1)).delete(userEntity);
-    }
-
-    @Test
     void change_user_status() {
         User changedUser = User.builder()
                 .id(USER_ID)
@@ -212,6 +206,19 @@ public class UserServiceTests {
         verify(userRepository, times(1)).findByUserId(USER_ID);
         verify(userRepository, times(1)).changeUserStatus(USER_ID, USER_DEACTIVE);
         verify(userMapper, times(1)).entityToDto(userEntity);
+    }
+
+
+    @Test
+    void delete_user() {
+
+        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(userEntity));
+        when(userMapper.entityToDto(userEntity)).thenReturn(user);
+
+        service.deleteUser(USER_ID);
+
+        verify(userRepository, times(1)).findById(USER_ID);
+        verify(userRepository, times(1)).delete(userEntity);
     }
 
 

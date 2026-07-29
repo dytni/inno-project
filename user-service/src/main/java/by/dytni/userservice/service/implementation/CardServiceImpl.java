@@ -125,4 +125,12 @@ public class CardServiceImpl implements CardService {
         cardRepository.changeCardStatus(cardId, !cardEntity.getActiveStatus());
         return cardMapper.entityToDto(cardEntity);
     }
+
+    @Override
+    public Boolean existsByIdAndUserId(Long cardId, Long userId) {
+        log.info("Checking is card {} of user {}", cardId, userId);
+        return cardRepository.findById(cardId)
+                .map(card -> card.getUser().getId().equals(userId))
+                .orElse(false);
+    }
 }

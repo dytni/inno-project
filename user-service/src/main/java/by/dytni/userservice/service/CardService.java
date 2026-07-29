@@ -24,4 +24,6 @@ public interface CardService {
 
     Card changeStatus(Long cardId);
 
+    Boolean existsByIdAndUserId(Long cardId, Long userId);
+
 }

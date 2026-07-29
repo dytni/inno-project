@@ -6,6 +6,7 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class UserServiceConstantsTest {
+    public static String CREATED_BY = "999";
     public static Long USER_ID = 1L;
     public static Boolean USER_ACTIVE = true;
     public static Boolean USER_DEACTIVE = false;

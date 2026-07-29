@@ -10,8 +10,11 @@ import static by.dytni.userservice.UserServiceConstantsTest.USER_LAST_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -32,6 +38,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import by.dytni.userservice.config.AuditTestConfig;
 import by.dytni.userservice.config.SecurityTestConfig;
 import by.dytni.userservice.dto.card.Card;
 import by.dytni.userservice.dto.card.CardMaker;
@@ -44,7 +51,10 @@ import by.dytni.userservice.dto.user.UserMaker;
 @AutoConfigureTestRestTemplate
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @ActiveProfiles("test")
-@Import(SecurityTestConfig.class)
+@Import({
+        SecurityTestConfig.class,
+        AuditTestConfig.class
+})
 public class CardIntegrationTest{
     private static final String POSTGRES_PASSWORD = UUID.randomUUID().toString();
 
@@ -77,18 +87,8 @@ public class CardIntegrationTest{
     private TestRestTemplate restTemplate;
 
     @BeforeEach
-    public void setUp() {
-        UserMaker request = UserMaker.builder()
-                .firstName(USER_FIRST_NAME)
-                .lastName(USER_LAST_NAME)
-                .email(USER_EMAIL)
-                .birthDate(USER_BIRTH_DATE)
-                .build();
-
-        ResponseEntity<User> response =
-                restTemplate.postForEntity("/api/user", request, User.class);
-
-        user = response.getBody();
+    void setUp() {
+        user = createUser();
     }
 
     @Test
@@ -113,14 +113,7 @@ public class CardIntegrationTest{
 
     @Test
     void get_card_by_id() {
-        CardMaker request = CardMaker.builder()
-                .userId(user.getId())
-                .cardNumber(CARD_NUMBER)
-                .build();
-
-        Card created = restTemplate
-                .postForEntity(BASE_URL, request, Card.class)
-                .getBody();
+        Card created = createCard();
         assertThat(created).isNotNull();
 
         ResponseEntity<Card> response =
@@ -136,14 +129,7 @@ public class CardIntegrationTest{
 
     @Test
     void update_card() {
-        CardMaker request = CardMaker.builder()
-                .userId(user.getId())
-                .cardNumber(CARD_NUMBER)
-                .build();
-
-        Card created = restTemplate
-                .postForEntity(BASE_URL, request, Card.class)
-                .getBody();
+        Card created = createCard();
         assertThat(created).isNotNull();
 
         CardUpdater updater =  CardUpdater.builder()
@@ -169,13 +155,7 @@ public class CardIntegrationTest{
     }
     @Test
     void get_all_cards() {
-        CardMaker request = CardMaker.builder()
-                .userId(user.getId())
-                .cardNumber(CARD_NUMBER)
-                .build();
-
-        restTemplate.postForEntity(BASE_URL, request, Card.class);
-
+        createCard();
         ResponseEntity<String> response =
                 restTemplate.getForEntity(BASE_URL, String.class);
 
@@ -185,14 +165,7 @@ public class CardIntegrationTest{
 
     @Test
     void change_card_status() {
-        CardMaker request = CardMaker.builder()
-                .userId(user.getId())
-                .cardNumber(CARD_NUMBER)
-                .build();
-
-        Card created = restTemplate
-                .postForEntity(BASE_URL, request, Card.class)
-                .getBody();
+        Card created = createCard();
 
         assertThat(created).isNotNull();
 
@@ -209,6 +182,48 @@ public class CardIntegrationTest{
         assertThat(body.getId()).isEqualTo(created.getId());
     }
 
+    private User createUser() {
+        UserMaker request = UserMaker.builder()
+                .firstName(USER_FIRST_NAME)
+                .lastName(USER_LAST_NAME)
+                .email(UUID.randomUUID() + "@gmail.com")
+                .birthDate(USER_BIRTH_DATE)
+                .build();
 
+        ResponseEntity<User> response =
+                restTemplate.postForEntity("/api/user", request, User.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.getBody()).isNotNull();
+
+        return response.getBody();
+    }
+
+    private Card createCard() {
+        CardMaker request = CardMaker.builder()
+                .userId(user.getId())
+                .cardNumber(generateCardNumber())
+                .build();
+
+        ResponseEntity<Card> response =
+                restTemplate.postForEntity(BASE_URL, request, Card.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.getBody()).isNotNull();
+
+        return response.getBody();
+    }
+
+    private String generateCardNumber() {
+        StringBuilder number = new StringBuilder(16);
+
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+
+        for (int i = 0; i < 16; i++) {
+            number.append(random.nextInt(10));
+        }
+
+        return number.toString();
+    }
 
 }
