@@ -1,11 +1,11 @@
 package by.dytni.userservice.integration;
 
-import static by.dytni.userservice.UserServiceConstantsTest.CARD_ACTIVE;
-import static by.dytni.userservice.UserServiceConstantsTest.CARD_ANOTHER_NUMBER;
-import static by.dytni.userservice.UserServiceConstantsTest.CARD_NUMBER;
-import static by.dytni.userservice.UserServiceConstantsTest.USER_BIRTH_DATE;
-import static by.dytni.userservice.UserServiceConstantsTest.USER_FIRST_NAME;
-import static by.dytni.userservice.UserServiceConstantsTest.USER_LAST_NAME;
+import static by.dytni.userservice.UserServiceTestConstants.CARD_ACTIVE;
+import static by.dytni.userservice.UserServiceTestConstants.CARD_ANOTHER_NUMBER;
+import static by.dytni.userservice.UserServiceTestConstants.CARD_NUMBER;
+import static by.dytni.userservice.UserServiceTestConstants.USER_BIRTH_DATE;
+import static by.dytni.userservice.UserServiceTestConstants.USER_FIRST_NAME;
+import static by.dytni.userservice.UserServiceTestConstants.USER_LAST_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;

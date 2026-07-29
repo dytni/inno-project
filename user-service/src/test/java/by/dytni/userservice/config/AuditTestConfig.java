@@ -1,6 +1,6 @@
 package by.dytni.userservice.config;
 
-import static by.dytni.userservice.UserServiceConstantsTest.CREATED_BY;
+import static by.dytni.userservice.UserServiceTestConstants.CREATED_BY;
 
 import java.util.Optional;
 

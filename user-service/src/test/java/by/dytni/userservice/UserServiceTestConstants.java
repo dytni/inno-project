@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class UserServiceConstantsTest {
+public class UserServiceTestConstants {
     public static String CREATED_BY = "999";
     public static Long USER_ID = 1L;
     public static Boolean USER_ACTIVE = true;
