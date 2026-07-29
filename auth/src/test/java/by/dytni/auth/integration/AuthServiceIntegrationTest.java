@@ -1,6 +1,9 @@
 package by.dytni.auth.integration;
 
-import static by.dytni.auth.AuthTestConstants.TEST_ADMIN_ROLE;
+
+import static by.dytni.auth.AuthTestConstants.TEST_ADMIN_LOGIN;
+import static by.dytni.auth.AuthTestConstants.TEST_ADMIN_PASSWORD;
+import static by.dytni.auth.AuthTestConstants.TEST_ADMIN_WRONG_PASSWORD;
 import static by.dytni.auth.AuthTestConstants.TEST_USER_PASSWORD;
 import static by.dytni.auth.AuthTestConstants.TEST_USER_ROLE;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,7 +19,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -27,7 +29,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import by.dytni.auth.dto.AuthRequest;
 import by.dytni.auth.dto.JwtResponse;
 import by.dytni.auth.dto.RegisterRequest;
-import by.dytni.auth.repository.UserRepository;
 
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -87,8 +88,8 @@ public class AuthServiceIntegrationTest {
     void login_with_wrong_password(){
 
         AuthRequest request = AuthRequest.builder()
-                .login("admin")
-                .password("1234")
+                .login(TEST_ADMIN_LOGIN)
+                .password(TEST_ADMIN_WRONG_PASSWORD)
                 .build();
 
 
@@ -124,8 +125,8 @@ public class AuthServiceIntegrationTest {
     private String getAdminToken() {
 
         AuthRequest request = AuthRequest.builder()
-                .login("admin")
-                .password("1111")
+                .login(TEST_ADMIN_LOGIN)
+                .password(TEST_ADMIN_PASSWORD)
                 .build();
 
         ResponseEntity<JwtResponse> response =

@@ -4,17 +4,14 @@ import static by.dytni.userservice.UserServiceConstantsTest.CARD_ACTIVE;
 import static by.dytni.userservice.UserServiceConstantsTest.CARD_ANOTHER_NUMBER;
 import static by.dytni.userservice.UserServiceConstantsTest.CARD_NUMBER;
 import static by.dytni.userservice.UserServiceConstantsTest.USER_BIRTH_DATE;
-import static by.dytni.userservice.UserServiceConstantsTest.USER_EMAIL;
 import static by.dytni.userservice.UserServiceConstantsTest.USER_FIRST_NAME;
 import static by.dytni.userservice.UserServiceConstantsTest.USER_LAST_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +23,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;

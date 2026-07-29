@@ -1,5 +1,7 @@
 package by.dytni.userservice.security;
 
+import java.security.Principal;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -16,7 +18,6 @@ public class CardSecurity {
 
     public boolean isOwner(Long cardId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         if (!(authentication.getPrincipal() instanceof Long userId))
             return false;
 
