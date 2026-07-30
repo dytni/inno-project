@@ -3,6 +3,7 @@ package by.dytni.auth.repository.model;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import by.dytni.commonhibernate.repository.entity.AuditableEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -27,7 +28,7 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @FieldNameConstants
 @Table(name = "user_entity")
-public class UserEntity extends AuditableEntity{
+public class UserEntity extends AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

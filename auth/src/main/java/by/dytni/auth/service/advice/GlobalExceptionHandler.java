@@ -11,6 +11,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import by.dytni.auth.dto.ErrorMessage;
 import by.dytni.auth.exception.UserAlreadyExist;
+import by.dytni.auth.exception.UserBlockedException;
 import by.dytni.auth.exception.UserNotFoundException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -61,6 +62,17 @@ public class GlobalExceptionHandler {
                 .description(request.getDescription(false).replace("uri=", ""))
                 .build();
         return  new  ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UserBlockedException.class)
+    public ResponseEntity<ErrorMessage> handleIllegalState(UserBlockedException exception, WebRequest request) {
+        ErrorMessage message = ErrorMessage.builder()
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .timestamp(LocalDate.now())
+                .message(exception.getMessage())
+                .description(request.getDescription(false).replace("uri=", ""))
+                .build();
+        return  new  ResponseEntity<>(message, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(UserNotFoundException.class)

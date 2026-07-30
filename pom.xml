@@ -25,6 +25,7 @@
   <modules>
     <module>auth</module>
     <module>user-service</module>
+    <module>common</module>
   </modules>
 
   <dependencies>

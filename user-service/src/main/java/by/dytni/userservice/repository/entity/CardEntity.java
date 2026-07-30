@@ -2,6 +2,7 @@ package by.dytni.userservice.repository.entity;
 
 import java.time.LocalDate;
 
+import by.dytni.commonhibernate.repository.entity.AuditableEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -28,7 +29,7 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @FieldNameConstants
 @Table(name = "card_entity")
-public class CardEntity extends AuditableEntity{
+public class CardEntity extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "card_id")

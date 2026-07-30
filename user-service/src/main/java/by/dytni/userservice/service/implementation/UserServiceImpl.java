@@ -1,5 +1,7 @@
 package by.dytni.userservice.service.implementation;
 
+import static by.dytni.userservice.UserServiceConstants.KAFKA_USER_STATUS_TOPIC;
+
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -9,6 +11,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import by.dytni.commonevents.Producer;
+import by.dytni.commonevents.dto.UserStatusChangedEvent;
 import by.dytni.userservice.dto.user.User;
 import by.dytni.userservice.dto.user.UserFilter;
 import by.dytni.userservice.dto.user.UserMaker;
@@ -21,17 +25,18 @@ import by.dytni.userservice.repository.criteria.UserCriteria;
 import by.dytni.userservice.repository.entity.UserEntity;
 import by.dytni.userservice.repository.specification.UserSpecification;
 import by.dytni.userservice.service.UserService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final UserCriteriaMapper userCriteriaMapper;
     private final UserSpecification userSpecification;
+    private final Producer producer;
 
     @Override
     @Transactional
@@ -88,14 +93,21 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException(userId));
     }
 
-    @Override
-    @Transactional
-    @CacheEvict(value = "users", key = "#userId")
-    public User changeStatus(Long userId) {
-        log.info("Change user status: {}", userId);
-        UserEntity userEntity = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
-        userRepository.changeUserStatus(userId, !userEntity.getActiveStatus());
-        return userMapper.entityToDto(userEntity);
-    }
+
+@Override
+@Transactional
+@CacheEvict(value = "users", key = "#userId")
+public User changeStatus(Long userId) {
+    log.info("Change user status: {}", userId);
+    UserEntity userEntity = userRepository.findByUserId(userId)
+            .orElseThrow(() -> new UserNotFoundException(userId));
+    boolean newStatus = !userEntity.getActiveStatus();
+    userRepository.changeUserStatus(userId, newStatus);
+    producer.send(
+            new UserStatusChangedEvent(userEntity.getEmail(), newStatus),
+            KAFKA_USER_STATUS_TOPIC
+    );
+    userEntity.setActiveStatus(newStatus);
+    return userMapper.entityToDto(userEntity);
+}
 }

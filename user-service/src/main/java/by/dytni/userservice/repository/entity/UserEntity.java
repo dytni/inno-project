@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import by.dytni.commonhibernate.repository.entity.AuditableEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,7 +31,7 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @FieldNameConstants
 @Table(name = "user_entity")
-public class UserEntity extends AuditableEntity{
+public class UserEntity extends AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

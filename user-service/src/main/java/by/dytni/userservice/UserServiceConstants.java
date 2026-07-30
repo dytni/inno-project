@@ -5,6 +5,8 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class UserServiceConstants {
 
+    public static final String KAFKA_USER_STATUS_TOPIC = "user-status";
+
     public static final String DEFAULT_PAGE = "0";
     public static final String DEFAULT_PAGE_SIZE = "10";
 

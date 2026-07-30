@@ -5,9 +5,15 @@ COPY pom.xml .
 
 COPY auth/pom.xml auth/
 COPY user-service/pom.xml user-service/
+COPY common/pom.xml common/
+COPY common/common-events/pom.xml common/common-events/
+COPY common/common-hibernate/pom.xml common/common-hibernate/
 
 RUN mvn dependency:go-offline -B
 
+
+COPY common/common-events/ common/common-events/
+COPY common/common-hibernate/ common/common-hibernate/
 COPY auth/src auth/src
 
 RUN mvn clean package -pl auth -am -DskipTests

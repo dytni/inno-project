@@ -1,5 +1,7 @@
 package by.dytni.auth.security;
 
+import static by.dytni.auth.AuthConstant.ROLE_CLAIM;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -11,19 +13,18 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import io.jsonwebtoken.Claims;
+import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-
-    public JwtFilter(JwtUtil jwtUtil) {
-        this.jwtUtil = jwtUtil;
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -32,11 +33,11 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String header = request.getHeader("Authorization");
 
-        if (header != null && header.startsWith("Bearer ")) {
+        if (StringUtils.isNotEmpty(header) && header.startsWith("Bearer ")) {
             String token = header.substring(7);
             Claims claims = jwtUtil.parseToken(token);
             Long userId = Long.parseLong(claims.getSubject());
-            String role = claims.get("role", String.class);
+            String role = claims.get(ROLE_CLAIM, String.class);
             List<GrantedAuthority> authorities =
                     List.of(new SimpleGrantedAuthority("ROLE_" + role));
 

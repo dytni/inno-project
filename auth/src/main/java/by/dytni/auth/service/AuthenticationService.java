@@ -13,4 +13,6 @@ public interface AuthenticationService {
     JwtResponse refresh(String token);
 
     void validate(String token);
+
+    void changeStatus(String login, Boolean status);
 }

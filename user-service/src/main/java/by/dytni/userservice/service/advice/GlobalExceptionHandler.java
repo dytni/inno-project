@@ -45,4 +45,16 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(message, HttpStatus.CONFLICT);
     }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorMessage> handleAccessDeniedException(Exception ex, WebRequest request) {
+
+        ErrorMessage message = ErrorMessage.builder()
+                .statusCode(HttpStatus.EXPECTATION_FAILED.value())
+                .timestamp(LocalDate.now())
+                .message(BUSINESS_LOGIC_ERROR + ex.getMessage())
+                .description(request.getDescription(false).replace("uri=", ""))
+                .build();
+
+        return new ResponseEntity<>(message, HttpStatus.EXPECTATION_FAILED);
+    }
 }
