@@ -1,4 +1,4 @@
-package by.dytni.auth.config;
+package by.dytni.commonhibernate.repository.config;
 
 import java.util.Optional;
 
