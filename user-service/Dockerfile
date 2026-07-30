@@ -25,7 +25,7 @@ ARG JAR_FILE=/app/user-service/target/*.jar
 
 COPY --from=builder ${JAR_FILE} app.jar
 
-EXPOSE 8080
+EXPOSE 8082
 
 ENV JAVA_OPTS="-Djava.security.egd=file:/dev/./urandom"
 
