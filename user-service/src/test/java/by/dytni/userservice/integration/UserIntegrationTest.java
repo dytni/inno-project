@@ -29,6 +29,8 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.kafka.KafkaContainer;
+import org.testcontainers.utility.DockerImageName;
 
 import by.dytni.userservice.config.AuditTestConfig;
 import by.dytni.userservice.config.SecurityTestConfig;
@@ -63,6 +65,11 @@ public class UserIntegrationTest{
     static GenericContainer<?> redis = new GenericContainer<>("redis:7")
             .withExposedPorts(6379);
 
+    @Container
+    static KafkaContainer kafka =
+            new KafkaContainer(
+                    DockerImageName.parse("apache/kafka:3.8.0"));
+
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
@@ -71,6 +78,7 @@ public class UserIntegrationTest{
         registry.add("spring.datasource.password", postgres::getPassword);
         registry.add("spring.data.redis.host", redis::getHost);
         registry.add("spring.data.redis.port", () -> redis.getMappedPort(6379));
+        registry.add("spring.kafka.bootstrap-servers", kafka::getBootstrapServers);
     }
 
 
@@ -166,6 +174,7 @@ public class UserIntegrationTest{
                 HttpEntity.EMPTY,
                 User.class
         );
+
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         User body = response.getBody();

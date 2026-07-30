@@ -1,5 +1,6 @@
 package by.dytni.userservice.service;
 
+import static by.dytni.userservice.UserServiceConstants.KAFKA_USER_STATUS_TOPIC;
 import static by.dytni.userservice.UserServiceTestConstants.USER_ACTIVE;
 import static by.dytni.userservice.UserServiceTestConstants.USER_ANOTHER_FIRST_NAME;
 import static by.dytni.userservice.UserServiceTestConstants.USER_BIRTH_DATE;
@@ -9,6 +10,8 @@ import static by.dytni.userservice.UserServiceTestConstants.USER_FIRST_NAME;
 import static by.dytni.userservice.UserServiceTestConstants.USER_ID;
 import static by.dytni.userservice.UserServiceTestConstants.USER_LAST_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -24,12 +27,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
+import by.dytni.commonevents.Producer;
+import by.dytni.commonevents.dto.UserStatusChangedEvent;
 import by.dytni.userservice.dto.user.User;
 import by.dytni.userservice.dto.user.UserFilter;
 import by.dytni.userservice.dto.user.UserMaker;
@@ -55,6 +61,8 @@ public class UserServiceTests {
     private UserSpecification userSpecification;
     @Mock
     Specification<UserEntity> specification;
+    @Mock
+    private Producer producer;
 
     @InjectMocks
     UserServiceImpl service;
@@ -202,6 +210,7 @@ public class UserServiceTests {
         verify(userRepository, times(1)).findByUserId(USER_ID);
         verify(userRepository, times(1)).changeUserStatus(USER_ID, USER_DEACTIVE);
         verify(userMapper, times(1)).entityToDto(userEntity);
+        verify(producer).send(any(UserStatusChangedEvent.class), eq(KAFKA_USER_STATUS_TOPIC));
     }
 
 
