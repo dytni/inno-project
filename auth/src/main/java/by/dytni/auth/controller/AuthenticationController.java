@@ -6,14 +6,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import by.dytni.auth.dto.AuthRequest;
+import by.dytni.auth.dto.auth.AuthRequest;
 import by.dytni.auth.dto.JwtResponse;
-import by.dytni.auth.dto.RegisterRequest;
+import by.dytni.auth.dto.register.RegisterRequest;
 import by.dytni.auth.service.AuthenticationService;
 import lombok.AllArgsConstructor;
 
@@ -24,8 +25,6 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
-
-    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/register")
     public ResponseEntity<JwtResponse> register(@RequestBody RegisterRequest request) {
         return ResponseEntity.status(CREATED).body(authenticationService.register(request));
@@ -46,4 +45,11 @@ public class AuthenticationController {
         authenticationService.validate(token);
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/admin")
+    public ResponseEntity<Void> makeAdmin(@RequestParam String login) {
+        authenticationService.makeAdmin(login);
+        return ResponseEntity.ok().build();
+    }
+
 }

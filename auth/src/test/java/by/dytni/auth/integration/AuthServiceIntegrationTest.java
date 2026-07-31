@@ -5,7 +5,6 @@ import static by.dytni.auth.AuthTestConstants.TEST_ADMIN_LOGIN;
 import static by.dytni.auth.AuthTestConstants.TEST_ADMIN_PASSWORD;
 import static by.dytni.auth.AuthTestConstants.TEST_ADMIN_WRONG_PASSWORD;
 import static by.dytni.auth.AuthTestConstants.TEST_USER_PASSWORD;
-import static by.dytni.auth.AuthTestConstants.TEST_USER_ROLE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.UUID;
@@ -15,8 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
@@ -26,14 +27,16 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import by.dytni.auth.dto.AuthRequest;
+import by.dytni.auth.config.TestSecurityConfig;
+import by.dytni.auth.dto.auth.AuthRequest;
 import by.dytni.auth.dto.JwtResponse;
-import by.dytni.auth.dto.RegisterRequest;
+import by.dytni.auth.dto.register.RegisterRequest;
 
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestRestTemplate
 @ActiveProfiles("test")
+@Import(TestSecurityConfig.class)
 public class AuthServiceIntegrationTest {
 
     private static final String POSTGRES_PASSWORD = UUID.randomUUID().toString();
@@ -57,22 +60,17 @@ public class AuthServiceIntegrationTest {
 
     @Test
     void register_user() {
-        String token = getAdminToken();
-
         RegisterRequest request = createRegisterRequest();
 
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(token);
 
-        HttpEntity<RegisterRequest> entity =
-                new HttpEntity<>(request, headers);
+
 
 
         ResponseEntity<JwtResponse> response =
                 restTemplate.postForEntity(
                         BASE_URL + "/register",
-                        entity,
+                        request,
                         JwtResponse.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -103,6 +101,33 @@ public class AuthServiceIntegrationTest {
 
         assertThat(response.getStatusCode())
                 .isEqualTo(HttpStatus.UNAUTHORIZED);
+    }
+
+    @Test
+    void make_admin(){
+
+        RegisterRequest registerRequest = createRegisterRequest();
+        restTemplate.postForEntity(
+                BASE_URL + "/register",
+                registerRequest,
+                JwtResponse.class);
+
+        String token = getAdminToken();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+
+        HttpEntity<RegisterRequest> request =
+                new HttpEntity<>(headers);
+        ResponseEntity<Void> response = restTemplate.exchange(
+                BASE_URL + "/admin?login=" + registerRequest.getLogin(),
+                HttpMethod.PUT,
+                request,
+                Void.class
+        );
+
+        assertThat(response.getStatusCode())
+                .isEqualTo(HttpStatus.OK);
     }
 
     @Test
@@ -145,7 +170,6 @@ public class AuthServiceIntegrationTest {
         return RegisterRequest.builder()
                 .login(UUID.randomUUID() + "@gmail.com")
                 .password(TEST_USER_PASSWORD)
-                .role(TEST_USER_ROLE)
                 .build();
     }
 

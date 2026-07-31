@@ -8,14 +8,15 @@ import static by.dytni.auth.AuthConstant.INVALID_TOKEN_ERROR;
 import static by.dytni.auth.AuthConstant.LOGIN_ALREADY_EXIST_ERROR;
 import static by.dytni.auth.AuthConstant.USER_BLOCKED_ERROR;
 
-import by.dytni.auth.dto.AuthRequest;
+import by.dytni.auth.dto.auth.AuthRequest;
 import by.dytni.auth.dto.JwtResponse;
-import by.dytni.auth.dto.RegisterRequest;
+import by.dytni.auth.dto.register.RegisterRequest;
 import by.dytni.auth.exception.UserAlreadyExist;
 import by.dytni.auth.exception.UserBlockedException;
 import by.dytni.auth.exception.UserNotFoundException;
 import by.dytni.auth.mapper.UserMapper;
 import by.dytni.auth.repository.UserRepository;
+import by.dytni.auth.repository.model.Role;
 import by.dytni.auth.repository.model.UserEntity;
 import by.dytni.auth.service.AuthenticationService;
 import by.dytni.auth.service.JwtService;
@@ -68,6 +69,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         UserEntity user = userMapper.dtoToEntity(request);
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+        user.setRole(Role.USER);
         UserEntity savedUser = userRepository.save(user);
 
         return JwtResponse.builder()
@@ -109,4 +111,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         log.info("Change user status: {}", login);
         userRepository.changeUserStatus(login, status);
     }
+
+    @Override
+    @Transactional
+    public void makeAdmin(String login) {
+        log.info("Make admin: {}", login);
+        if(!userRepository.existsByLogin(login))
+            throw new UserNotFoundException(login);
+        userRepository.changeRole(login, Role.ADMIN);
+    }
+
+    @Override
+    public void changeLogin(String login, String newLogin) {
+        log.info("Change login: {}", login);
+        userRepository.changeUserLogin(login, newLogin);
+    }
+
 }

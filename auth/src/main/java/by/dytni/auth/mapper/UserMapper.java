@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.NullValueMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
-import by.dytni.auth.dto.RegisterRequest;
+import by.dytni.auth.dto.register.RegisterRequest;
 import by.dytni.auth.repository.model.UserEntity;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring",

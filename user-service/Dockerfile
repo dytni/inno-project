@@ -8,11 +8,13 @@ COPY user-service/pom.xml user-service/
 COPY common/pom.xml common/
 COPY common/common-events/pom.xml common/common-events/
 COPY common/common-hibernate/pom.xml common/common-hibernate/
+COPY common/common-security/pom.xml common/common-security/
 
 RUN mvn dependency:go-offline -B
 
 COPY common/common-events/ common/common-events/
 COPY common/common-hibernate/ common/common-hibernate/
+COPY common/common-security/ common/common-security/
 COPY user-service/src user-service/src
 
 RUN mvn clean package -pl user-service -am -DskipTests

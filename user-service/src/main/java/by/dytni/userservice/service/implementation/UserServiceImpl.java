@@ -1,6 +1,6 @@
 package by.dytni.userservice.service.implementation;
 
-import static by.dytni.userservice.UserServiceConstants.KAFKA_USER_STATUS_TOPIC;
+import static by.dytni.userservice.UserServiceConstants.KAFKA_USER_LOGIN_TOPIC;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -11,13 +11,15 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import by.dytni.commonevents.Producer;
+import by.dytni.commonevents.dto.UserChangedLoginEvent;
 import by.dytni.commonevents.dto.UserStatusChangedEvent;
 import by.dytni.userservice.dto.user.User;
 import by.dytni.userservice.dto.user.UserFilter;
 import by.dytni.userservice.dto.user.UserMaker;
 import by.dytni.userservice.dto.user.UserUpdater;
 import by.dytni.userservice.exceptions.UserNotFoundException;
+import by.dytni.userservice.kafka.UserLoginChangedProducer;
+import by.dytni.userservice.kafka.UserStatusChangedProducer;
 import by.dytni.userservice.mapper.UserCriteriaMapper;
 import by.dytni.userservice.mapper.UserMapper;
 import by.dytni.userservice.repository.UserRepository;
@@ -25,6 +27,7 @@ import by.dytni.userservice.repository.criteria.UserCriteria;
 import by.dytni.userservice.repository.entity.UserEntity;
 import by.dytni.userservice.repository.specification.UserSpecification;
 import by.dytni.userservice.service.UserService;
+import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,7 +39,8 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final UserCriteriaMapper userCriteriaMapper;
     private final UserSpecification userSpecification;
-    private final Producer producer;
+    private final UserStatusChangedProducer statusProducer;
+    private final UserLoginChangedProducer loginProducer;
 
     @Override
     @Transactional
@@ -55,7 +59,13 @@ public class UserServiceImpl implements UserService {
         log.info("Update user: {}", userUpdater);
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
+        String oldEmail = userEntity.getEmail();
+        String newEmail = userUpdater.getEmail();
+        boolean isEmailChanged = StringUtils.isNotBlank(newEmail) && !newEmail.equals(oldEmail);
         userRepository.save(userMapper.updateEntity(userEntity, userUpdater));
+        if(isEmailChanged) {
+            loginProducer.send(new UserChangedLoginEvent(oldEmail, newEmail));
+        }
         return userMapper.entityToDto(userEntity);
     }
 
@@ -94,20 +104,17 @@ public class UserServiceImpl implements UserService {
     }
 
 
-@Override
-@Transactional
-@CacheEvict(value = "users", key = "#userId")
-public User changeStatus(Long userId) {
-    log.info("Change user status: {}", userId);
-    UserEntity userEntity = userRepository.findByUserId(userId)
-            .orElseThrow(() -> new UserNotFoundException(userId));
-    boolean newStatus = !userEntity.getActiveStatus();
-    userRepository.changeUserStatus(userId, newStatus);
-    producer.send(
-            new UserStatusChangedEvent(userEntity.getEmail(), newStatus),
-            KAFKA_USER_STATUS_TOPIC
-    );
-    userEntity.setActiveStatus(newStatus);
-    return userMapper.entityToDto(userEntity);
-}
+    @Override
+    @Transactional
+    @CacheEvict(value = "users", key = "#userId")
+    public User changeStatus(Long userId) {
+        log.info("Change user status: {}", userId);
+        UserEntity userEntity = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+        boolean newStatus = !userEntity.getActiveStatus();
+        userRepository.changeUserStatus(userId, newStatus);
+        statusProducer.send(new UserStatusChangedEvent(userEntity.getEmail(), newStatus));
+        userEntity.setActiveStatus(newStatus);
+        return userMapper.entityToDto(userEntity);
+    }
 }

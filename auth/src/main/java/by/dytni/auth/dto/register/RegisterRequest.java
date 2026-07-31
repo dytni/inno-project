@@ -1,4 +1,4 @@
-package by.dytni.auth.dto;
+package by.dytni.auth.dto.register;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthRequest {
+public class RegisterRequest {
     private String login;
     private String password;
 }

@@ -1,8 +1,9 @@
 package by.dytni.auth.service;
 
-import by.dytni.auth.dto.AuthRequest;
+import by.dytni.auth.dto.auth.AuthRequest;
 import by.dytni.auth.dto.JwtResponse;
-import by.dytni.auth.dto.RegisterRequest;
+import by.dytni.auth.dto.register.RegisterRequest;
+
 
 public interface AuthenticationService {
 
@@ -15,4 +16,9 @@ public interface AuthenticationService {
     void validate(String token);
 
     void changeStatus(String login, Boolean status);
+
+    void makeAdmin(String login);
+
+    void changeLogin(String login, String newLogin);
+
 }
