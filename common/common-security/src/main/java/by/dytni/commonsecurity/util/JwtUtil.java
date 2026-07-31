@@ -1,4 +1,4 @@
-package by.dytni.auth.security;
+package by.dytni.commonsecurity.util;
 
 import javax.crypto.SecretKey;
 
