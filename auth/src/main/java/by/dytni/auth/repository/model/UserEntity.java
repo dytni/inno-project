@@ -33,7 +33,7 @@ public class UserEntity extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    Long id;
+    private Long id;
 
     @Column(unique = true, nullable = false, name = "user_login")
     private String login;

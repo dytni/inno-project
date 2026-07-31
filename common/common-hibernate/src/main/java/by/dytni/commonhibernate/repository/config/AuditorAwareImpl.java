@@ -13,6 +13,7 @@ public class AuditorAwareImpl implements AuditorAware<String> {
                 .map(Authentication::getPrincipal)
                 .filter(Long.class::isInstance)
                 .map(Long.class::cast)
-                .map(String::valueOf);
+                .map(String::valueOf)
+                .or(() -> Optional.of("SYSTEM"));
     }
 }
