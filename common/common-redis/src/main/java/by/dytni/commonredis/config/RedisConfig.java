@@ -1,4 +1,4 @@
-package by.dytni.userservice.config;
+package by.dytni.commonredis.config;
 
 import java.time.Duration;
 

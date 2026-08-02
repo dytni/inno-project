@@ -114,6 +114,15 @@
       <scope>compile</scope>
     </dependency>
 
+
+    <!-- REDIS -->
+
+    <dependency>
+      <groupId>by.dytni</groupId>
+      <artifactId>common-redis</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+
   </dependencies>
 
   <build>

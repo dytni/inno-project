@@ -1,7 +1,5 @@
 package by.dytni.userservice.service.implementation;
 
-import static by.dytni.userservice.UserServiceConstants.KAFKA_USER_LOGIN_TOPIC;
-
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -113,7 +111,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException(userId));
         boolean newStatus = !userEntity.getActiveStatus();
         userRepository.changeUserStatus(userId, newStatus);
-        statusProducer.send(new UserStatusChangedEvent(userEntity.getEmail(), newStatus));
+        statusProducer.send(new UserStatusChangedEvent(userId ,userEntity.getEmail(), newStatus));
         userEntity.setActiveStatus(newStatus);
         return userMapper.entityToDto(userEntity);
     }

@@ -11,6 +11,7 @@ import by.dytni.commonevents.config.KafkaConsumerConfig;
         scanBasePackages = {
                 "by.dytni.commonhibernate",
                 "by.dytni.commonsecurity",
+                "by.dytni.commonredis",
                 "by.dytni.auth"
         }
 )

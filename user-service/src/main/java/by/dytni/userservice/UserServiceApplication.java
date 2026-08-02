@@ -9,7 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
                 "by.dytni.userservice",
                 "by.dytni.commonevents",
                 "by.dytni.commonhibernate",
-                "by.dytni.commonsecurity"
+                "by.dytni.commonsecurity",
+                "by.dytni.commonredis"
         }
 )
 public class UserServiceApplication {

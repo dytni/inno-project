@@ -4,26 +4,25 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>by.dytni</groupId>
-    <artifactId>innovise-project</artifactId>
+    <artifactId>common</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-
-  <artifactId>common</artifactId>
+  <artifactId>common-redis</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>common</name>
-  <description>common</description>
-  <packaging>pom</packaging>
+  <name>common-redis</name>
+  <description>common-redis</description>
 
   <properties>
     <java.version>21</java.version>
   </properties>
+  <dependencies>
 
-  <modules>
-    <module>common-events</module>
-    <module>common-hibernate</module>
-    <module>common-security</module>
-    <module>common-redis</module>
-  </modules>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-redis</artifactId>
+    </dependency>
+
+  </dependencies>
 
 
 </project>

@@ -9,6 +9,7 @@ COPY common/pom.xml common/
 COPY common/common-events/pom.xml common/common-events/
 COPY common/common-hibernate/pom.xml common/common-hibernate/
 COPY common/common-security/pom.xml common/common-security/
+COPY common/common-redis/pom.xml common/common-redis/
 
 RUN mvn dependency:go-offline -B
 
@@ -16,6 +17,7 @@ RUN mvn dependency:go-offline -B
 COPY common/common-events/ common/common-events/
 COPY common/common-hibernate/ common/common-hibernate/
 COPY common/common-security/ common/common-security/
+COPY common/common-redis/ common/common-redis/
 COPY auth/src auth/src
 
 RUN mvn clean package -pl auth -am -DskipTests
