@@ -28,9 +28,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.postgresql.PostgreSQLContainer;
+import org.testcontainers.utility.DockerImageName;
 
 import by.dytni.userservice.config.AuditTestConfig;
 import by.dytni.userservice.config.SecurityTestConfig;
@@ -53,14 +54,14 @@ public class CardIntegrationTest{
     private static final String POSTGRES_PASSWORD = UUID.randomUUID().toString();
 
     @Container
-    public static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15")
+    public static org.testcontainers.postgresql.PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:15")
             .withDatabaseName("testdb")
             .withUsername("user")
             .withPassword(POSTGRES_PASSWORD);
 
     @Container
-    static GenericContainer<?> redis = new GenericContainer<>("redis:7")
-                    .withExposedPorts(6379);
+    static GenericContainer<?> redis = new GenericContainer(DockerImageName.parse("redis:7-alpine"))
+            .withExposedPorts(6379);
 
 
     @DynamicPropertySource
