@@ -1,6 +1,5 @@
 package by.dytni.userservice.security;
 
-import java.security.Principal;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

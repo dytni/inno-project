@@ -31,13 +31,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
-import by.dytni.commonevents.Producer;
 import by.dytni.commonevents.dto.UserStatusChangedEvent;
 import by.dytni.userservice.dto.user.User;
 import by.dytni.userservice.dto.user.UserFilter;
 import by.dytni.userservice.dto.user.UserMaker;
 import by.dytni.userservice.dto.user.UserUpdater;
-import by.dytni.userservice.kafka.UserLoginChangedProducer;
 import by.dytni.userservice.kafka.UserStatusChangedProducer;
 import by.dytni.userservice.mapper.UserCriteriaMapper;
 import by.dytni.userservice.mapper.UserMapper;
