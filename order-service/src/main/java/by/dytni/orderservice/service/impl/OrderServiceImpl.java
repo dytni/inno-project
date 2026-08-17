@@ -65,11 +65,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Order> getOrderByUserId(Long userId, Pageable pageable) {
+    public Page<Order> getOrdersByUserId(Long userId, Pageable pageable) {
         return orderRepository.getOrdersByUserId(userId, pageable).map(orderMapper::entityToDto);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Order getOrderById(Long orderId) {
         return orderMapper.entityToDto(
                 orderRepository.findById(orderId)
@@ -78,6 +79,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean existsByIdAndUserId(Long orderId, Long userId) {
         return orderRepository.existsByIdAndUserId(orderId, userId);
     }

@@ -2,12 +2,9 @@ package by.dytni.orderservice.controller;
 
 import static by.dytni.orderservice.OrderServiceConstants.DEFAULT_PAGE;
 import static by.dytni.orderservice.OrderServiceConstants.DEFAULT_PAGE_SIZE;
-import static by.dytni.orderservice.OrderServiceConstants.DEFAULT_SHOW_MODE;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
-import java.time.LocalDateTime;
-import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -28,7 +26,6 @@ import by.dytni.orderservice.dto.order.Order;
 import by.dytni.orderservice.dto.order.OrderFilter;
 import by.dytni.orderservice.dto.order.OrderMaker;
 import by.dytni.orderservice.dto.order.OrderUpdater;
-import by.dytni.orderservice.repository.entity.OrderStatus;
 import by.dytni.orderservice.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -59,31 +56,18 @@ public class OrderController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<Page<Order>> getAllOrders(
-            @RequestParam(required = false) LocalDateTime from,
-            @RequestParam(required = false) LocalDateTime to,
-            @RequestParam(required = false) List<OrderStatus> statuses,
-            @RequestParam(defaultValue = DEFAULT_SHOW_MODE) Boolean showDeleted,
-            @RequestParam(defaultValue = DEFAULT_PAGE) int page,
-            @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size){
-        return ResponseEntity.status(OK).body(orderService.getAllOrders(OrderFilter.builder()
-                                                                                .from(from)
-                                                                                .to(to)
-                                                                                .statuses(statuses)
-                                                                                .showDeleted(showDeleted)
-                                                                                .page(page)
-                                                                                .size(size)
-                                                                                .build()));
+    public ResponseEntity<Page<Order>> getAllOrders(@Valid @ModelAttribute OrderFilter orderFilter){
+        return ResponseEntity.status(OK).body(orderService.getAllOrders(orderFilter));
     }
 
     @PreAuthorize("hasRole('ADMIN') or #userId == authentication.principal")
     @GetMapping("/user")
-    public ResponseEntity<Page<Order>> getOrderByUserId(
+    public ResponseEntity<Page<Order>> getOrdersByUserId(
             @RequestParam Long userId,
             @RequestParam(defaultValue = DEFAULT_PAGE) int page,
             @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size){
         Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.status(OK).body(orderService.getOrderByUserId(userId,pageable));
+        return ResponseEntity.status(OK).body(orderService.getOrdersByUserId(userId, pageable));
     }
 
     @PreAuthorize("hasRole('ADMIN') or @orderSecurity.isOwner(#id)")

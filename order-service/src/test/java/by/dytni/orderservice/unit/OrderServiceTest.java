@@ -122,7 +122,7 @@ class OrderServiceTest {
         when(orderRepository.getOrdersByUserId(USER_ID, pageable)).thenReturn(orderEntityPage);
         when(orderMapper.entityToDto(orderEntity)).thenReturn(order);
 
-        Page<Order> result = service.getOrderByUserId(USER_ID, pageable);
+        Page<Order> result = service.getOrdersByUserId(USER_ID, pageable);
 
         assertThat(result).hasSize(3);
         assertThat(result.getContent().getFirst()).isEqualTo(order);

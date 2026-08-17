@@ -17,7 +17,7 @@ public interface OrderService {
 
     Page<Order> getAllOrders(OrderFilter filter);
 
-    Page<Order> getOrderByUserId(Long userId, Pageable pageable);
+    Page<Order> getOrdersByUserId(Long userId, Pageable pageable);
 
     Order getOrderById(Long orderId);
 
