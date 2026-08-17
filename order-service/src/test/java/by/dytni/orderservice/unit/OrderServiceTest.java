@@ -23,7 +23,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import by.dytni.orderservice.dto.order.Order;
-import by.dytni.orderservice.dto.order.OrderFilter;
 import by.dytni.orderservice.dto.order.OrderMaker;
 import by.dytni.orderservice.dto.order.OrderUpdater;
 import by.dytni.orderservice.mapper.OrderCriteriaMapper;
@@ -51,8 +50,6 @@ class OrderServiceTest {
     private OrderMaker orderMaker;
     @Mock
     private OrderUpdater orderUpdater;
-    @Mock
-    private OrderFilter orderFilter;
     @Mock
     private Pageable pageable;
 

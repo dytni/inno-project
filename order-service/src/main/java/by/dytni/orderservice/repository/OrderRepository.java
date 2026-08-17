@@ -13,15 +13,6 @@ import by.dytni.orderservice.repository.entity.OrderEntity;
 
 public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
 
-    //TODO delete maybe
-    @Modifying(clearAutomatically = true, flushAutomatically = true)
-    @Query("""
-              UPDATE OrderEntity o
-              SET o.deleted = true
-              WHERE o.id = :orderId
-              """)
-    void deleteOrderById(@Param("orderId") Long orderId);
-
     Page<OrderEntity> findAll(Specification<OrderEntity> spec, Pageable pageable);
 
     Page<OrderEntity> getOrdersByUserId(Long userId, Pageable pageable);

@@ -65,14 +65,4 @@ public class OrderEntity extends AuditableEntity {
     )
     @Builder.Default
     private List<OrderItemEntity> orderItems = new ArrayList<>();
-
-    public void addItem(OrderItemEntity item) {
-        orderItems.add(item);
-        item.setOrder(this);
-    }
-
-    public void removeItem(OrderItemEntity item) {
-        orderItems.remove(item);
-        item.setOrder(null);
-    }
 }
