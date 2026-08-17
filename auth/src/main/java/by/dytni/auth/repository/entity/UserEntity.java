@@ -1,4 +1,4 @@
-package by.dytni.auth.repository.model;
+package by.dytni.auth.repository.entity;
 
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
