@@ -39,7 +39,7 @@ public class CardController implements CardControllerApi {
 
 
 
-    @PreAuthorize("hasRole('ADMIN') or #paymentCardDTO.userId == authentication.principal")
+    @PreAuthorize("hasRole('ADMIN') or #cardMaker.userId == authentication.principal")
     @PostMapping
     public ResponseEntity<Card> createCard(@Valid @RequestBody CardMaker cardMaker) {
         return ResponseEntity.status(CREATED).body(cardService.createCard(cardMaker));
