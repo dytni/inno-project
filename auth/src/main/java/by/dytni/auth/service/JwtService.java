@@ -1,6 +1,6 @@
 package by.dytni.auth.service;
 
-import by.dytni.auth.repository.model.Role;
+import by.dytni.auth.repository.entity.Role;
 
 public interface JwtService {
 

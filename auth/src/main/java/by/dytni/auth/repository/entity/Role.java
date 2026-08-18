@@ -1,4 +1,4 @@
-package by.dytni.auth.repository.model;
+package by.dytni.auth.repository.entity;
 
 public enum Role {
     ADMIN,
