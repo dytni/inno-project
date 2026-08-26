@@ -10,14 +10,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import by.dytni.commonevents.dto.UserChangedLoginEvent;
+import by.dytni.commonevents.dto.UserCreatedEvent;
 import by.dytni.commonevents.dto.UserStatusChangedEvent;
 import by.dytni.userservice.dto.user.User;
 import by.dytni.userservice.dto.user.UserFilter;
 import by.dytni.userservice.dto.user.UserMaker;
 import by.dytni.userservice.dto.user.UserUpdater;
 import by.dytni.userservice.exceptions.UserNotFoundException;
-import by.dytni.userservice.kafka.UserLoginChangedProducer;
-import by.dytni.userservice.kafka.UserStatusChangedProducer;
+import by.dytni.userservice.kafka.producer.UserLoginChangedProducer;
+import by.dytni.userservice.kafka.producer.UserStatusChangedProducer;
 import by.dytni.userservice.mapper.UserCriteriaMapper;
 import by.dytni.userservice.mapper.UserMapper;
 import by.dytni.userservice.repository.UserRepository;
@@ -114,5 +115,13 @@ public class UserServiceImpl implements UserService {
         statusProducer.send(new UserStatusChangedEvent(userId ,userEntity.getEmail(), newStatus));
         userEntity.setActiveStatus(newStatus);
         return userMapper.entityToDto(userEntity);
+    }
+
+    @Override
+    @Transactional
+    public void createUserFromAuth(UserCreatedEvent userCreatedEvent) {
+        log.info("Create user from auth: {}", userCreatedEvent);
+        UserEntity userEntity = userMapper.dtoToEntity(userCreatedEvent);
+        userRepository.save(userEntity);
     }
 }

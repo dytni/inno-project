@@ -1,6 +1,7 @@
-package by.dytni.userservice.kafka;
+package by.dytni.userservice.kafka.producer;
 
-import static by.dytni.userservice.UserServiceConstants.KAFKA_USER_LOGIN_TOPIC;
+
+import static by.dytni.commonevents.CommonsKafkaConstants.KAFKA_USER_LOGIN_TOPIC;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;

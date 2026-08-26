@@ -6,6 +6,7 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValueMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
+import by.dytni.commonevents.dto.UserCreatedEvent;
 import by.dytni.userservice.dto.user.User;
 import by.dytni.userservice.dto.user.UserMaker;
 import by.dytni.userservice.dto.user.UserUpdater;
@@ -14,6 +15,8 @@ import by.dytni.userservice.repository.entity.UserEntity;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring",
         nullValueMappingStrategy = NullValueMappingStrategy.RETURN_DEFAULT)
 public abstract class UserMapper {
+
+    public abstract UserEntity dtoToEntity(UserCreatedEvent event);
 
     public abstract UserEntity dtoToEntity(UserMaker userMaker);
     public abstract User entityToDto(UserEntity userEntity);
