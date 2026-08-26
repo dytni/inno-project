@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
-import by.dytni.auth.dto.ErrorMessage;
 import by.dytni.auth.exception.UserAlreadyExist;
 import by.dytni.auth.exception.UserBlockedException;
 import by.dytni.auth.exception.UserNotFoundException;
+import by.dytni.commonexceptions.exceptions.ErrorMessage;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 

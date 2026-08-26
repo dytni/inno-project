@@ -10,6 +10,7 @@ import by.dytni.commonevents.config.KafkaConsumerConfig;
 @SpringBootApplication(
         scanBasePackages = {
                 "by.dytni.commonhibernate",
+                "by.dytni.commonevents",
                 "by.dytni.commonsecurity",
                 "by.dytni.commonredis",
                 "by.dytni.auth"

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
-import by.dytni.orderservice.dto.ErrorMessage;
+import by.dytni.commonexceptions.exceptions.ErrorMessage;
 import by.dytni.orderservice.exceptions.ItemNotFoundException;
 import by.dytni.orderservice.exceptions.OrderNotFoundException;
 

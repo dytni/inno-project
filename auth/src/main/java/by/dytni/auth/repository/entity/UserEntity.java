@@ -4,6 +4,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import by.dytni.commonhibernate.repository.entity.AuditableEntity;
+import by.dytni.commonsecurity.dto.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

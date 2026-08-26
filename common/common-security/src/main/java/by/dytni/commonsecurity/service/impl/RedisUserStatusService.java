@@ -1,6 +1,9 @@
 package by.dytni.commonsecurity.service.impl;
 
+import static by.dytni.commonsecurity.CommonSecurityConstant.BLACKLIST_PREFIX;
+
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -9,12 +12,12 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "spring.data.redis.port")
 public class RedisUserStatusService implements UserStatusService {
 
     @Value("${jwt.access.expiration}")
     private Long accessExpiration;
 
-    private static final String PREFIX = "inactive_user:";
 
     private final RedisTemplate<String, Object> redisTemplate;
 
@@ -22,7 +25,7 @@ public class RedisUserStatusService implements UserStatusService {
     public boolean isActive(Long userId) {
 
         return !Boolean.TRUE.equals(
-                redisTemplate.hasKey(PREFIX + userId)
+                redisTemplate.hasKey(BLACKLIST_PREFIX + userId)
         );
     }
 
@@ -30,7 +33,7 @@ public class RedisUserStatusService implements UserStatusService {
     public void deactivate(Long userId) {
 
         redisTemplate.opsForValue().set(
-                PREFIX + userId,
+                BLACKLIST_PREFIX + userId,
                 true,
                 accessExpiration
         );
@@ -38,7 +41,6 @@ public class RedisUserStatusService implements UserStatusService {
 
     @Override
     public void activate(Long userId) {
-
-        redisTemplate.delete(PREFIX + userId);
+        redisTemplate.delete(BLACKLIST_PREFIX + userId);
     }
 }

@@ -1,6 +1,4 @@
-package by.dytni.userservice.dto;
-
-
+package by.dytni.commonexceptions.exceptions;
 
 import java.time.LocalDate;
 

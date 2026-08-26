@@ -1,0 +1,57 @@
+spring:
+  data:
+    redis:
+      host: redis
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: auth-service
+              uri: ${AUTH_SERVICE_URL:http://localhost:8081}
+              predicates:
+                - Path=/api/auth/**
+              filters:
+                - AddRequestHeader=X-Gateway-Header, SpringCloudGateway
+                - StripPrefix=0
+
+            - id: user-service
+              uri: ${USER_SERVICE_URL:http://localhost:8082}
+              predicates:
+                - Path=/api/user/**,/api/card/**
+              filters:
+                - AddRequestHeader=X-Gateway-Header, SpringCloudGateway
+                - StripPrefix=0
+
+            - id: order-service
+              uri: ${ORDER_SERVICE_URL:http://localhost:8083}
+              predicates:
+                - Path=/api/order/**
+              filters:
+                - AddRequestHeader=X-Gateway-Header, SpringCloudGateway
+                - StripPrefix=0
+
+
+server:
+  port: ${GATEWAY_PORT:8085}
+
+jwt:
+  secret: ${JWT_SECRET}
+
+auth:
+  service:
+    url: ${AUTH_SERVICE_URL:http://auth-service:8081}
+
+gateway:
+  public:
+    paths: /api/auth/login,/api/auth/register,/api/auth/refresh,/api/auth/validate
+
+
+logging:
+  level:
+    by.dytni.gateway: DEBUG
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.web: DEBUG

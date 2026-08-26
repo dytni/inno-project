@@ -3,7 +3,7 @@ package by.dytni.auth.service;
 import by.dytni.auth.dto.auth.AuthRequest;
 import by.dytni.auth.dto.JwtResponse;
 import by.dytni.auth.dto.register.RegisterRequest;
-
+import by.dytni.commonevents.dto.UserRollbackEvent;
 
 public interface AuthenticationService {
 
@@ -20,5 +20,7 @@ public interface AuthenticationService {
     void makeAdmin(String login);
 
     void changeLogin(String login, String newLogin);
+
+    void rollBackUser(UserRollbackEvent event);
 
 }

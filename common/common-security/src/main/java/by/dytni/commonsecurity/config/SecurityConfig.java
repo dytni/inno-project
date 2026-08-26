@@ -14,7 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
-import by.dytni.commonsecurity.filter.JwtFilter;
+import by.dytni.commonsecurity.filter.GatewayAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @Profile("!test")
 public class SecurityConfig {
 
-    private final JwtFilter jwtFilter;
+    private final GatewayAuthenticationFilter gatewayAuthenticationFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -38,8 +38,16 @@ public class SecurityConfig {
                                                                new CorsConfiguration().applyPermitDefaultValues()))
                 .sessionManagement(sm ->
                                            sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/api/auth/login",
+                                "/api/auth/register",
+                                "/api/auth/refresh",
+                                "/api/auth/validate"
+                        ).permitAll()
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(gatewayAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }
