@@ -10,14 +10,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import by.dytni.commonsecurity.filter.JwtFilter;
+import by.dytni.auth.filter.TestJwtFilter;
 import lombok.RequiredArgsConstructor;
 
 @TestConfiguration
 @RequiredArgsConstructor
 public class TestSecurityConfig {
 
-    private final JwtFilter jwtFilter;
+    private final TestJwtFilter jwtFilter;
 
     @Bean
     PasswordEncoder passwordEncoder() {

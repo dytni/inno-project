@@ -36,7 +36,7 @@ import by.dytni.userservice.dto.user.User;
 import by.dytni.userservice.dto.user.UserFilter;
 import by.dytni.userservice.dto.user.UserMaker;
 import by.dytni.userservice.dto.user.UserUpdater;
-import by.dytni.userservice.kafka.UserStatusChangedProducer;
+import by.dytni.userservice.kafka.producer.UserStatusChangedProducer;
 import by.dytni.userservice.mapper.UserCriteriaMapper;
 import by.dytni.userservice.mapper.UserMapper;
 import by.dytni.userservice.repository.UserRepository;
