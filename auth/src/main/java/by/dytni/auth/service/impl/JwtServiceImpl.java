@@ -86,12 +86,6 @@ public class JwtServiceImpl implements JwtService {
         return Long.parseLong(extractAllClaims(token).getSubject());
     }
 
-    @Override
-    public String getUserRole(String token) {
-        log.info("Get user role from token {}", token);
-        return extractAllClaims(token).get(ROLE_CLAIM,  String.class);
-    }
-
     private Claims extractAllClaims(String token){
         return Jwts.parser()
                 .verifyWith(getSigningKey())

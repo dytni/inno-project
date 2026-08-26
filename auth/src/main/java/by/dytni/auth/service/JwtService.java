@@ -12,6 +12,5 @@ public interface JwtService {
 
     Long getUserId(String token);
 
-    String getUserRole(String token);
 
 }

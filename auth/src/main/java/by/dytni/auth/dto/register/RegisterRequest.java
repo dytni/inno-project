@@ -27,6 +27,7 @@ public class RegisterRequest {
 
     @NotBlank
     private String password;
+
     @NotBlank
     @Size(max = 255)
     private String firstName;

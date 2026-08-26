@@ -13,10 +13,8 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JacksonJsonDeserializer;
 
-import by.dytni.commonevents.dto.UserStatusChangedEvent;
 
 @Configuration
 @EnableKafka
@@ -27,31 +25,29 @@ public class KafkaConsumerConfig {
     private String bootstrapServers;
 
     @Bean
-    public ConsumerFactory<String, UserStatusChangedEvent> consumerFactory() {
+    public ConsumerFactory<String, Object> consumerFactory() {
 
         Map<String, Object> config = new HashMap<>();
 
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
-        config.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JacksonJsonDeserializer.class);
+        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JacksonJsonDeserializer.class);
         config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
-        JacksonJsonDeserializer<UserStatusChangedEvent> jsonDeserializer =
-                new JacksonJsonDeserializer<>(UserStatusChangedEvent.class);
-        jsonDeserializer.addTrustedPackages("by.dytni.commonevents.dto");
-        jsonDeserializer.ignoreTypeHeaders();
+        JacksonJsonDeserializer<Object> deserializer = new JacksonJsonDeserializer<>();
+        deserializer.addTrustedPackages("by.dytni.commonevents.dto");
 
         return new DefaultKafkaConsumerFactory<>(
                 config,
                 new StringDeserializer(),
-                jsonDeserializer);
+                deserializer
+        );
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, UserStatusChangedEvent>
+    public ConcurrentKafkaListenerContainerFactory<String, Object>
     kafkaListenerContainerFactory(
-            ConsumerFactory<String, UserStatusChangedEvent> consumerFactory) {
-        ConcurrentKafkaListenerContainerFactory<String, UserStatusChangedEvent> factory =
+            ConsumerFactory<String, Object> consumerFactory) {
+        ConcurrentKafkaListenerContainerFactory<String, Object> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
         return factory;
