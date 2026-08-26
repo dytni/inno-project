@@ -1,6 +1,6 @@
 package by.dytni.auth.service;
 
-import by.dytni.auth.repository.entity.Role;
+import by.dytni.commonsecurity.dto.Role;
 
 public interface JwtService {
 
@@ -11,5 +11,6 @@ public interface JwtService {
     boolean validate(String token);
 
     Long getUserId(String token);
+
 
 }

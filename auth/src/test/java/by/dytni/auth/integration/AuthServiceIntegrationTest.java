@@ -5,6 +5,9 @@ import static by.dytni.auth.AuthTestConstants.TEST_ADMIN_LOGIN;
 import static by.dytni.auth.AuthTestConstants.TEST_ADMIN_PASSWORD;
 import static by.dytni.auth.AuthTestConstants.TEST_ADMIN_WRONG_PASSWORD;
 import static by.dytni.auth.AuthTestConstants.TEST_USER_PASSWORD;
+import static by.dytni.auth.AuthTestConstants.USER_BIRTH_DATE;
+import static by.dytni.auth.AuthTestConstants.USER_FIRST_NAME;
+import static by.dytni.auth.AuthTestConstants.USER_LAST_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.UUID;
@@ -24,6 +27,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.kafka.KafkaContainer;
 import org.testcontainers.postgresql.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -54,6 +58,11 @@ public class AuthServiceIntegrationTest {
     static GenericContainer redis = new GenericContainer(DockerImageName.parse("redis:7-alpine"))
             .withExposedPorts(6379);
 
+    @Container
+    static KafkaContainer kafka =
+            new KafkaContainer(
+                    DockerImageName.parse("apache/kafka:3.8.0"));
+
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", postgres::getJdbcUrl);
@@ -61,6 +70,7 @@ public class AuthServiceIntegrationTest {
         registry.add("spring.datasource.password", postgres::getPassword);
         registry.add("spring.data.redis.host", redis::getHost);
         registry.add("spring.data.redis.port", () -> redis.getMappedPort(6379));
+        registry.add("spring.kafka.bootstrap-servers", kafka::getBootstrapServers);
     }
 
     @Autowired
@@ -173,6 +183,9 @@ public class AuthServiceIntegrationTest {
         return RegisterRequest.builder()
                 .login(UUID.randomUUID() + "@gmail.com")
                 .password(TEST_USER_PASSWORD)
+                .firstName(USER_FIRST_NAME)
+                .lastName(USER_LAST_NAME)
+                .birthDate(USER_BIRTH_DATE)
                 .build();
     }
 

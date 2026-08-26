@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
+import by.dytni.commonexceptions.exceptions.ErrorMessage;
 import by.dytni.userservice.exceptions.CardNotFoundException;
 import by.dytni.userservice.exceptions.CardsLimitException;
 import by.dytni.userservice.exceptions.UserNotFoundException;
-import by.dytni.userservice.dto.ErrorMessage;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {

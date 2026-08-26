@@ -1,5 +1,4 @@
-package by.dytni.commonsecurity.filter;
-
+package by.dytni.auth.filter;
 
 import java.io.IOException;
 import java.util.List;
@@ -12,8 +11,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import by.dytni.auth.util.JwtUtil;
 import by.dytni.commonsecurity.service.UserStatusService;
-import by.dytni.commonsecurity.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.FilterChain;
@@ -24,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class JwtFilter extends OncePerRequestFilter {
+public class TestJwtFilter extends OncePerRequestFilter {
 
     private static final String ROLE_CLAIM = "role";
 
@@ -60,3 +59,5 @@ public class JwtFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
+
+

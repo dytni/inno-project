@@ -1,0 +1,9 @@
+spring:
+  data:
+    redis:
+      host: localhost
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+
+jwt:
+  secret: ${JWT_SECRET}

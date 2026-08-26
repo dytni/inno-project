@@ -19,6 +19,8 @@
   </properties>
 
   <modules>
+
+    <module>common-exceptions</module>
     <module>common-events</module>
     <module>common-hibernate</module>
     <module>common-security</module>

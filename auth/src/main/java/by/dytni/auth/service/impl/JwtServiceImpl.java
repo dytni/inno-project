@@ -1,6 +1,7 @@
 package by.dytni.auth.service.impl;
 
-import static by.dytni.auth.AuthConstant.ROLE_CLAIM;
+
+import static by.dytni.commonsecurity.CommonSecurityConstant.ROLE_CLAIM;
 
 import java.util.Date;
 
@@ -9,8 +10,9 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import by.dytni.auth.repository.entity.Role;
 import by.dytni.auth.service.JwtService;
+import by.dytni.commonsecurity.dto.Role;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -81,14 +83,15 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public Long getUserId(String token) {
         log.info("Get user id from token {}", token);
-        return Long.parseLong(
-                Jwts.parser()
-                        .verifyWith(getSigningKey())
-                        .build()
-                        .parseSignedClaims(token)
-                        .getPayload()
-                        .getSubject()
-        );
+        return Long.parseLong(extractAllClaims(token).getSubject());
+    }
+
+    private Claims extractAllClaims(String token){
+        return Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     private SecretKey getSigningKey() {

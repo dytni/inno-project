@@ -2,6 +2,7 @@ package by.dytni.userservice.service;
 
 import org.springframework.data.domain.Page;
 
+import by.dytni.commonevents.dto.UserCreatedEvent;
 import by.dytni.userservice.dto.user.User;
 import by.dytni.userservice.dto.user.UserFilter;
 import by.dytni.userservice.dto.user.UserMaker;
@@ -20,4 +21,6 @@ public interface UserService {
      User getUserById(Long userId);
 
      User changeStatus(Long userId);
+
+     void createUserFromAuth(UserCreatedEvent userCreatedEvent);
 }

@@ -14,12 +14,15 @@ import by.dytni.auth.dto.register.RegisterRequest;
 import by.dytni.auth.exception.UserAlreadyExist;
 import by.dytni.auth.exception.UserBlockedException;
 import by.dytni.auth.exception.UserNotFoundException;
+import by.dytni.auth.kafka.producer.UserCreatedProducer;
 import by.dytni.auth.mapper.UserMapper;
 import by.dytni.auth.repository.UserRepository;
-import by.dytni.auth.repository.entity.Role;
 import by.dytni.auth.repository.entity.UserEntity;
 import by.dytni.auth.service.AuthenticationService;
 import by.dytni.auth.service.JwtService;
+import by.dytni.commonevents.dto.UserCreatedEvent;
+import by.dytni.commonevents.dto.UserRollbackEvent;
+import by.dytni.commonsecurity.dto.Role;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final UserMapper userMapper;
+    private final UserCreatedProducer userCreatedProducer;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -71,6 +75,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
         user.setRole(Role.USER);
         UserEntity savedUser = userRepository.save(user);
+        userCreatedProducer.send(new UserCreatedEvent(
+                savedUser.getId(),
+                request.getLogin(),
+                request.getFirstName(),
+                request.getLastName(),
+                request.getBirthDate()
+        ));
 
         return JwtResponse.builder()
                 .accessToken(jwtService.generateAccessToken(savedUser.getId(), savedUser.getRole()))
@@ -122,9 +133,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
+    @Transactional
     public void changeLogin(String login, String newLogin) {
         log.info("Change login: {}", login);
         userRepository.changeUserLogin(login, newLogin);
+    }
+
+    @Override
+    @Transactional
+    public void rollBackUser(UserRollbackEvent event) {
+        log.info("rollback user: {}", event);
+        userRepository.deleteById(event.authUserId());
     }
 
 }

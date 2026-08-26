@@ -1,8 +1,9 @@
-package by.dytni.auth.kafka;
+package by.dytni.auth.kafka.consumer;
 
-import static by.dytni.auth.AuthConstant.KAFKA_USER_STATUS_TOPIC;
+import static by.dytni.commonevents.CommonsKafkaConstants.KAFKA_USER_STATUS_TOPIC;
 
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.stereotype.Component;
 
 import by.dytni.auth.service.AuthenticationService;
@@ -21,6 +22,8 @@ public class UserStatusChangedConsumer {
 
     private final AuthenticationService authenticationService;
 
+
+    @RetryableTopic(attempts = "5")
     @KafkaListener(topics = KAFKA_USER_STATUS_TOPIC, groupId = "auth-service")
     public void consume(UserStatusChangedEvent event) {
         log.info("Received {}", event);

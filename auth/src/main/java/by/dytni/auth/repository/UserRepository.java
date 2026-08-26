@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import by.dytni.auth.repository.entity.Role;
 import by.dytni.auth.repository.entity.UserEntity;
+import by.dytni.commonsecurity.dto.Role;
 
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
     boolean existsByLogin(String login);
