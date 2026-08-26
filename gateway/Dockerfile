@@ -17,24 +17,20 @@ COPY common/common-redis/pom.xml common/common-redis/
 RUN mvn dependency:go-offline -B
 
 
-COPY common/common-events/ common/common-events/
-COPY common/common-hibernate/ common/common-hibernate/
-COPY common/common-security/ common/common-security/
-COPY common/common-exceptions/ common/common-exceptions/
 COPY common/common-redis/ common/common-redis/
-COPY auth/src auth/src
+COPY gateway/src gateway/src
 
-RUN mvn clean package -pl auth -am -DskipTests
+RUN mvn clean package -pl gateway -am -DskipTests
 
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
 
-ARG JAR_FILE=/app/auth/target/*.jar
+ARG JAR_FILE=/app/gateway/target/*.jar
 
 COPY --from=builder ${JAR_FILE} app.jar
 
-EXPOSE 8081
+EXPOSE 8085
 
 ENV JAVA_OPTS="-Djava.security.egd=file:/dev/./urandom"
 

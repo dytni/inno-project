@@ -17,8 +17,8 @@ services:
 
   redis:
     image: redis:7
-    ports:
-      - "${REDIS_PORT}:6379"
+    expose:
+      - "${REDIS_PORT}"
     command:
       - redis-server
       - --requirepass
@@ -37,8 +37,8 @@ services:
     image: apache/kafka:4.1.0
     container_name: kafka
     restart: unless-stopped
-    ports:
-      - "${KAFKA_BROKER_PORT}:9092"
+    expose:
+      - "${KAFKA_BROKER_PORT}"
     environment:
       KAFKA_NODE_ID: ${KAFKA_NODE_ID}
       KAFKA_PROCESS_ROLES: ${KAFKA_PROCESS_ROLES}
@@ -68,8 +68,8 @@ services:
     build:
       context: .
       dockerfile: user-service/Dockerfile
-    ports:
-      - "${USER_SERVICE_PORT}:8082"
+    expose:
+      - "${USER_SERVICE_PORT}"
     depends_on:
       postgres:
         condition: service_healthy
@@ -89,8 +89,8 @@ services:
     build:
       context: .
       dockerfile: auth/Dockerfile
-    ports:
-      - "${AUTH_SERVICE_PORT}:8081"
+    expose:
+      - "${AUTH_SERVICE_PORT}"
     depends_on:
       postgres:
         condition: service_healthy
@@ -110,20 +110,41 @@ services:
     build:
       context: .
       dockerfile: order-service/Dockerfile
-    ports:
-      - "${ORDER_SERVICE_PORT}:8083"
+    expose:
+      - "${ORDER_SERVICE_PORT}"
     depends_on:
       postgres:
-        condition: service_healthy
-      redis:
         condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: docker
       SPRING_DATASOURCE_URL: ${POSTGRES_ORDER_URL}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+
+  api-gateway:
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: gateway/Dockerfile
+    ports:
+      - "${GATEWAY_PORT}:8085"
+    depends_on:
+      redis:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+      user-service:
+        condition: service_started
+      order-service:
+        condition: service_started
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
       SPRING_DATA_REDIS_PORT: 6379
       SPRING_DATA_REDIS_PASSWORD: ${REDIS_PASSWORD}
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
+      USER_SERVICE_URL: ${USER_SERVICE_URL}
+      ORDER_SERVICE_URL: ${ORDER_SERVICE_URL}
 
 
 volumes:
