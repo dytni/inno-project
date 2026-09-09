@@ -6,6 +6,7 @@ COPY pom.xml .
 COPY auth/pom.xml auth/
 COPY user-service/pom.xml user-service/
 COPY order-service/pom.xml order-service/
+COPY payment-service/pom.xml payment-service/
 COPY gateway/pom.xml gateway/
 COPY common/pom.xml common/
 COPY common/common-events/pom.xml common/common-events/
