@@ -48,7 +48,8 @@ public class OrderEntity extends AuditableEntity {
     @Enumerated(value = EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "status", nullable = false)
-    private OrderStatus status;
+    @Builder.Default
+    private OrderStatus status = OrderStatus.CREATED;
 
     @Column(name = "order_price")
     private BigDecimal totalPrice;
