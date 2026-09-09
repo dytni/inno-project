@@ -7,6 +7,7 @@ import by.dytni.orderservice.dto.order.Order;
 import by.dytni.orderservice.dto.order.OrderFilter;
 import by.dytni.orderservice.dto.order.OrderMaker;
 import by.dytni.orderservice.dto.order.OrderUpdater;
+import by.dytni.orderservice.repository.entity.OrderStatus;
 
 public interface OrderService {
     Order createOrder(OrderMaker orderMaker);
@@ -22,4 +23,6 @@ public interface OrderService {
     Order getOrderById(Long orderId);
 
     boolean existsByIdAndUserId(Long orderId, Long userId);
+
+    void consumePayment(OrderStatus orderStatus, Long orderId);
 }

@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication(
         scanBasePackages = {
                 "by.dytni.orderservice",
+                "by.dytni.commonevents",
                 "by.dytni.commonsecurity",
                 "by.dytni.commonhibernate"
         }
