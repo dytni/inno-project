@@ -34,6 +34,14 @@ spring:
                 - AddRequestHeader=X-Gateway-Header, SpringCloudGateway
                 - StripPrefix=0
 
+            - id: payment-service
+              uri: ${PAYMENT_SERVICE_URL:http://localhost:8084}
+              predicates:
+                - Path=/api/payment/**
+              filters:
+                - AddRequestHeader=X-Gateway-Header, SpringCloudGateway
+                - StripPrefix=0
+
 
 server:
   port: ${GATEWAY_PORT:8085}
