@@ -27,7 +27,9 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.kafka.KafkaContainer;
 import org.testcontainers.postgresql.PostgreSQLContainer;
+import org.testcontainers.utility.DockerImageName;
 
 import by.dytni.orderservice.config.SecurityTestConfig;
 import by.dytni.orderservice.dto.item.Item;
@@ -59,11 +61,17 @@ public class OrderIntegrationTest {
             .withUsername("user")
             .withPassword(POSTGRES_PASSWORD);
 
+    @Container
+    static KafkaContainer kafka =
+            new KafkaContainer(
+                    DockerImageName.parse("apache/kafka:3.8.0"));
+
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", postgres::getJdbcUrl);
         registry.add("spring.datasource.username", postgres::getUsername);
         registry.add("spring.datasource.password", postgres::getPassword);
+        registry.add("spring.kafka.bootstrap-servers", kafka::getBootstrapServers);
     }
 
     private Item item;
@@ -115,7 +123,6 @@ public class OrderIntegrationTest {
         Order created = createOrder();
         assertThat(created).isNotNull();
         OrderUpdater updater = OrderUpdater.builder()
-                .status(OrderStatus.APPROVED)
                 .orderItems(createOrderItemUpdaters())
                 .build();
 
@@ -135,7 +142,6 @@ public class OrderIntegrationTest {
 
         assertThat(body).isNotNull();
         assertThat(body.getId()).isEqualTo(created.getId());
-        assertThat(body.getStatus()).isEqualTo(OrderStatus.APPROVED);
     }
 
     @Test
@@ -149,7 +155,6 @@ public class OrderIntegrationTest {
     private OrderMaker createOrderRequest() {
         return OrderMaker.builder()
                 .userId(USER_ID)
-                .status(ORDER_STATUS)
                 .orderItems(createOrderItems())
                 .build();
     }
