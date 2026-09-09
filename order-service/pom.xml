@@ -50,6 +50,13 @@
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
 
+    <!-- KAFKA -->
+    <dependency>
+      <groupId>by.dytni</groupId>
+      <artifactId>common-events</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+
     <!-- DATABASE -->
 
     <dependency>
@@ -110,6 +117,13 @@
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers-postgresql</artifactId>
       <version>2.0.5</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>kafka</artifactId>
+      <version>1.21.4</version>
       <scope>test</scope>
     </dependency>
 
