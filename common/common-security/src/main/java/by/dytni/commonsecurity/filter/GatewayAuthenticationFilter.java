@@ -10,6 +10,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,6 +20,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 
 @Component
+@Slf4j
 public class GatewayAuthenticationFilter extends OncePerRequestFilter {
 
 
@@ -31,6 +33,11 @@ public class GatewayAuthenticationFilter extends OncePerRequestFilter {
         if (userId != null && role != null) {
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     Long.valueOf(userId), null, List.of(new SimpleGrantedAuthority("ROLE_" + role)));
+            log.info(
+                    "Authentication created: principal={}, authorities={}",
+                    authentication.getPrincipal(),
+                    authentication.getAuthorities()
+            );
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         filterChain.doFilter(request, response);
