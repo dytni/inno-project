@@ -16,6 +16,7 @@ import by.dytni.orderservice.mapper.OrderMapper;
 import by.dytni.orderservice.repository.OrderRepository;
 import by.dytni.orderservice.repository.criteria.OrderCriteria;
 import by.dytni.orderservice.repository.entity.OrderEntity;
+import by.dytni.orderservice.repository.entity.OrderStatus;
 import by.dytni.orderservice.repository.specifications.OrderSpecification;
 import by.dytni.orderservice.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class OrderServiceImpl implements OrderService {
+
 
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
@@ -82,5 +84,14 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(readOnly = true)
     public boolean existsByIdAndUserId(Long orderId, Long userId) {
         return orderRepository.existsByIdAndUserId(orderId, userId);
+    }
+
+    @Override
+    @Transactional
+    public void consumePayment(OrderStatus orderStatus, Long orderId) {
+        OrderEntity orderEntity = orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException(orderId));
+        orderEntity.setStatus(orderStatus);
+        orderRepository.save(orderEntity);
     }
 }

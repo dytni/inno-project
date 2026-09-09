@@ -1,0 +1,19 @@
+spring:
+  application:
+           name: payment-service
+  mongodb:
+    uri: ${MONGO_URI}
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER}
+
+app:
+  liquibase:
+    change-log: db/changelog/db.changelog-master.yaml
+
+  external-api:
+    random-number:
+      base-url: https://aisenseapi.com/services/v1/random_number/1/100
+
+server:
+  port: ${PAYMENT_SERVICE_PORT}
