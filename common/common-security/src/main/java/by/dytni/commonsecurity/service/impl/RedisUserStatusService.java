@@ -12,7 +12,10 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-@ConditionalOnProperty(name = "spring.data.redis.port")
+@ConditionalOnProperty(
+        name = "redis.enabled",
+        havingValue = "true"
+)
 public class RedisUserStatusService implements UserStatusService {
 
     @Value("${jwt.access.expiration}")

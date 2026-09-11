@@ -42,6 +42,8 @@ spring:
                 - AddRequestHeader=X-Gateway-Header, SpringCloudGateway
                 - StripPrefix=0
 
+redis:
+  enabled: true
 
 server:
   port: ${GATEWAY_PORT:8085}
@@ -63,3 +65,21 @@ logging:
     by.dytni.gateway: DEBUG
     org.springframework.cloud.gateway: DEBUG
     org.springframework.web: DEBUG
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
