@@ -1,13 +1,11 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: mongo-db
   namespace: dytni
 spec:
+  serviceName: mongo-db
   replicas: 1
-
-  strategy:
-    type: Recreate
 
   selector:
     matchLabels:
@@ -63,7 +61,14 @@ spec:
             timeoutSeconds: 5
             failureThreshold: 3
 
-      volumes:
-        - name: mongo-storage
-          persistentVolumeClaim:
-            claimName: mongo-pvc
+  volumeClaimTemplates:
+    - metadata:
+        name: mongo-storage
+
+      spec:
+        accessModes:
+          - ReadWriteOnce
+
+        resources:
+          requests:
+            storage: 2Gi

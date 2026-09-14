@@ -1,9 +1,10 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: postgres
   namespace: dytni
 spec:
+  serviceName: postgres
   replicas: 1
 
   selector:
@@ -16,12 +17,15 @@ spec:
         app: postgres
 
     spec:
+      terminationGracePeriodSeconds: 30
+
       containers:
         - name: postgres
           image: postgres:15-alpine
 
           ports:
-            - containerPort: 5432
+            - name: postgres
+              containerPort: 5432
 
           env:
             - name: POSTGRES_USER
@@ -69,10 +73,18 @@ spec:
             failureThreshold: 5
 
       volumes:
-        - name: postgres-storage
-          persistentVolumeClaim:
-            claimName: postgres-pvc
-
         - name: postgres-init
           configMap:
             name: postgres-init
+
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-storage
+
+      spec:
+        accessModes:
+          - ReadWriteOnce
+
+        resources:
+          requests:
+            storage: 2Gi
