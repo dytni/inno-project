@@ -103,7 +103,7 @@ public class CardIntegrationTest{
         assertThat(body).isNotNull();
         assertThat(body.getId()).isNotNull();
         assertThat(body.getActiveStatus()).isEqualTo(CARD_ACTIVE);
-        assertThat(body.getExpiryDate().isEqual(LocalDate.now().plusYears(5)));
+        assertThat(body.getExpiryDate()).isEqualTo(LocalDate.now().plusYears(5));
     }
 
     @Test
