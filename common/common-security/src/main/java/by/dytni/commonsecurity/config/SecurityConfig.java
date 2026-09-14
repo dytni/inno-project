@@ -33,6 +33,10 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http){
+
+                /* CSRF is disabled because this service is a stateless REST API.
+                 Authentication is performed using JWT credentials and no
+                 authentication state is stored in browser cookies.*/
         return http.csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(request ->
                                                                new CorsConfiguration().applyPermitDefaultValues()))
